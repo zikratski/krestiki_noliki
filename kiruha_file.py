@@ -12,3 +12,4 @@ print('ok')
 
 
 print("lera")
+print('ok ok ')
