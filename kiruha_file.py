@@ -9,3 +9,5 @@ print('trying smth new in another branch')
 
 
 print('ok')
+
+print('наконец-то создал свою ветку!')
