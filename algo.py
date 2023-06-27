@@ -39,7 +39,7 @@ def search_solutions(state,solutions,win_lines):
                     win_lines[f"r{p_move[1]}"][0] += 1
                     win_lines[f"r{p_move[1]}"][1].add(p_move)
 
-                      search_solutions(state,solutions,win_lines)
+                    search_solutions(state,solutions,win_lines)
 
                     matr[p_move[0]][p_move[1]] = win_lines[f"c{p_move[0]}"][2] = win_lines[f"r{p_move[1]}"][2] = 0
                     win_lines[f"c{p_move[0]}"][0] -= 1
@@ -47,7 +47,7 @@ def search_solutions(state,solutions,win_lines):
                     win_lines[f"r{p_move[1]}"][0] -= 1
                     win_lines[f"r{p_move[1]}"][1].remove(p_move)
 
-            #matr[c_move[0]][c_move[1]] = win_lines[f"c{c_move[0]}"][2] = win_lines[f"r{c_move[1]}"][2] = 0
+            matr[c_move[0]][c_move[1]] = win_lines[f"c{c_move[0]}"][2] = win_lines[f"r{c_move[1]}"][2] = 0
             win_lines[f"c{c_move[0]}"][0] -= 1
             win_lines[f"c{c_move[0]}"][1].remove(c_move)
             win_lines[f"r{c_move[1]}"][0] -= 1
