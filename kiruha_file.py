@@ -9,3 +9,6 @@ print('trying smth new in another branch')
 
 
 print('ok')
+
+
+print("lera")
