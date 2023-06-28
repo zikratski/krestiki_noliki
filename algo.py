@@ -7,16 +7,30 @@ matr = np.zeros((3,3))
 
 
 
-def AI_get_solutions(matr):
+def AI_get_solutions(matr, mode='standart'):
     columns_len = len(matr[0])
     rows_len = len(matr)
     solutions = []
     loses = []
     state = matr[:]
-    plays = list()
-    search_solutions(state,plays,solutions, loses)
-    solution = random.choice(solutions)[0]
+    solution = None
+    if mode == 'standart':
+        plays = list()
+        search_solutions(state,plays,solutions, loses)
+        solution = random.choice(solutions)[0]
+    elif mode == 'random':
+        solution = random_sol(state)
+    elif mode == 'minmax':
+        pass
     return solution
+
+def random_sol(state):
+    sols = []
+    for i, column in enumerate(state):
+        for j, elem in enumerate(column):
+            if state[i][j] == 0:
+                sols.append((i,j))
+    return random.choice(sols)
 
 def search_solutions(state,plays,solutions, loses):
     candidates = get_candidates(state)
