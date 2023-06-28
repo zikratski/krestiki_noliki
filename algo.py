@@ -9,57 +9,70 @@ def AI_get_solutions(matr):
     columns_len = len(matr[0])
     rows_len = len(matr)
     solutions = []
-    state = matr[:] # копируем матрицу в state
-    #win_lines - здесь будем хранить для каждого возможного решения(тройки) координаты
-    win_lines = {f"c{i}":np.array([0,set(),0]) for i in range(rows_len)} \
-                | {f"r{i}":np.array([0,set(),0]) for i in range(columns_len)} \
-                | {f"d{i}":np.array([0,set(),0]) for i in range(2)}
-    #print(win_lines)
-    search_solutions(state,solutions,win_lines)
+    state = matr[:]
+    plays = list()
+    search_solutions(state,plays,solutions)
 
     return solutions
 
-def search_solutions(state,solutions,win_lines):
-    if check_state(state, solutions, win_lines):
-        return
-    else:
-        candidates = get_candidates(state)
-        for c_move in candidates:
-            matr[c_move[0]][c_move[1]] = win_lines[f"c{c_move[0]}"][2] = win_lines[f"r{c_move[1]}"][2] = 1
-            win_lines[f"c{c_move[0]}"][0] += 1
-            win_lines[f"c{c_move[0]}"][1].add(c_move)
-            win_lines[f"r{c_move[1]}"][0] += 1
-            win_lines[f"r{c_move[1]}"][1].add(c_move)
+def search_solutions(state,plays,solutions):
+    candidates = get_candidates(state)
+    for c_move in candidates:
+        matr[c_move[0]][c_move[1]] = 1
+        plays.append(c_move)
+        for p_move in candidates:
+            if p_move != c_move:
+                plays.append(p_move)
+                matr[p_move[0]][p_move[1]] = 2
+                if check_win(state):
+                    solutions.append(plays)
+                    plays = plays[:-2]
+                    return True
+                elif check_lose(state):
+                    plays = plays[:-2]
+                    return False
+                else:
+                    search_solutions(state,plays,solutions)
+                    plays = plays[:-2]
+                matr[p_move[0]][p_move[1]] = 0
+        matr[c_move[0]][c_move[1]] = 0
 
-            for p_move in candidates:
-                if p_move != c_move:
-                    matr[p_move[0]][p_move[1]] = win_lines[f"c{p_move[0]}"][2] = win_lines[f"r{p_move[1]}"][2] = 2
-                    win_lines[f"c{p_move[0]}"][0] += 1
-                    win_lines[f"c{p_move[0]}"][1].add(p_move)
-                    win_lines[f"r{p_move[1]}"][0] += 1
-                    win_lines[f"r{p_move[1]}"][1].add(p_move)
 
-                    search_solutions(state,solutions,win_lines)
+# def check_state(state, solutions, win_lines):
+#     for k,v in win_lines.items():
+#         if v[0] == 3:
+#             solutions.append(v[1:])
+#             return True
+#     return False
 
-                    matr[p_move[0]][p_move[1]] = win_lines[f"c{p_move[0]}"][2] = win_lines[f"r{p_move[1]}"][2] = 0
-                    win_lines[f"c{p_move[0]}"][0] -= 1
-                    win_lines[f"c{p_move[0]}"][1].remove(p_move)
-                    win_lines[f"r{p_move[1]}"][0] -= 1
-                    win_lines[f"r{p_move[1]}"][1].remove(p_move)
 
-            matr[c_move[0]][c_move[1]] = win_lines[f"c{c_move[0]}"][2] = win_lines[f"r{c_move[1]}"][2] = 0
-            win_lines[f"c{c_move[0]}"][0] -= 1
-            win_lines[f"c{c_move[0]}"][1].remove(c_move)
-            win_lines[f"r{c_move[1]}"][0] -= 1
-            win_lines[f"r{c_move[1]}"][1].remove(c_move)
-
-def check_state(state, solutions, win_lines):
-    for k,v in win_lines.items():
-        if v[0] == 3:
-            solutions.append(v[1:])
+def check_win(state):
+    for column in state:
+        if np.array_equal(column, np.array([1,1,1])):
             return True
-    return False
+    for row in state[:,]:
+        if np.array_equal(row, np.array([1,1,1])):
+            return True
+    if state[0][0] == state[1][1] == state[2][2] == 1:
+        return True
+    elif state[0][2] == state[1][1] == state[2][0] == 1:
+        return True
+    else:
+        return False
 
+def check_lose(state):
+    for column in state:
+        if np.array_equal(column, np.array([2,2,2])):
+            return True
+    for row in state[:,]:
+        if np.array_equal(row, np.array([2,2,2])):
+            return True
+    if state[0][0] == state[1][1] == state[2][2] == 2:
+        return True
+    elif state[0][2] == state[1][1] == state[2][0] == 2:
+        return True
+    else:
+        return False
 def get_candidates(state):
     candidates = []
     for i, column in enumerate(state):
@@ -70,3 +83,6 @@ def get_candidates(state):
 
 
 sols = AI_get_solutions(matr)
+
+
+print('change for kiryll')
