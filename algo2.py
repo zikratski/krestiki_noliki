@@ -106,6 +106,6 @@ if __name__ == '__main__':
         best_move(matr_zero)
         print(matr_zero)
         print()
-
+print('smth change')
 
 
