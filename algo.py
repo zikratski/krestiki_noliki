@@ -1,9 +1,8 @@
 import random
-
 import numpy as np
 
-matr = np.zeros((3,3))
-#print(matr)
+import algo2
+
 
 
 
@@ -17,11 +16,12 @@ def AI_get_solutions(matr, mode='standart'):
     if mode == 'standart':
         plays = list()
         search_solutions(state,plays,solutions, loses)
+        print(f"len solutions: {len(solutions)}")
         solution = random.choice(solutions)[0]
     elif mode == 'random':
         solution = random_sol(state)
     elif mode == 'minmax':
-        pass
+        solution = algo2.best_move(state)
     return solution
 
 def random_sol(state):
@@ -81,8 +81,9 @@ def check_lose(state):
     for column in state:
         if np.array_equal(column, np.array([2,2,2])):
             return True
-    for row in state[:,]:
-        if np.array_equal(row, np.array([2,2,2])):
+    for col_index in range(state.shape[1]):
+        column = state[:, col_index]
+        if np.array_equal(column, np.array([2,2,2])):
             return True
     if state[0][0] == state[1][1] == state[2][2] == 2:
         return True
@@ -90,6 +91,10 @@ def check_lose(state):
         return True
     else:
         return False
+
+def check_tie(state):
+    if 0 not in state and not check_lose(state) and not check_win(state):
+        return True
 def get_candidates(state):
     candidates = []
     for i, column in enumerate(state):
@@ -99,5 +104,9 @@ def get_candidates(state):
     return candidates
 
 
-solution = AI_get_solutions(matr)
-print(solution)
+if __name__ == '__main__':
+    matr = np.zeros((3, 3))
+    #print(matr)
+    solution = AI_get_solutions(matr, mode = 'minmax')
+    print('i am here')
+    print(solution)
