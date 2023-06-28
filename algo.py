@@ -103,5 +103,5 @@ def get_candidates(state):
     return candidates
 
 
-solution = AI_get_solutions(matr)
-print(solution)
+#solution = AI_get_solutions(matr)
+#print(solution)

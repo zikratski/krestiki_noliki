@@ -3,7 +3,6 @@ import algo
 
 ai = 1
 pers = 2
-
 def best_move(state):
     inf = float('inf')
     best_score = -inf
@@ -13,7 +12,7 @@ def best_move(state):
         for j, elem in enumerate(column):
             if state[i][j] == 0:
                 state[i][j] = ai
-                score = minimax(state, 0, True)
+                score = minimax(state, 0, False)
                 state[i][j] = 0
                 if (score > best_score):
                     best_score = score
@@ -58,9 +57,19 @@ def minimax(state, depth, isMaximazing):
 
 matr = np.array([[1,0,0],[2,0,1],[1,0,2]])
 
-print(matr)
-for _ in range(4):
-    best_move(matr)
+matr_zero = np.zeros_like(matr)
+while True:
+    if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
+        break
+    inp = input('i,j')
+    matr_zero[int(inp[0])][int(inp[-1])] = 2
+    print(matr_zero)
     print()
-    print(matr)
+    best_move(matr_zero)
+    print(matr_zero)
+    print()
+
+# inp = input()
+# print(inp, type(inp))
+
 
