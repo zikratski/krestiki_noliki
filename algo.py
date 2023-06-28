@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 matr = np.zeros((3,3))
@@ -5,37 +7,52 @@ matr = np.zeros((3,3))
 
 
 
-def AI_get_solutions(matr):
+def AI_get_solutions(matr, mode='standart'):
     columns_len = len(matr[0])
     rows_len = len(matr)
     solutions = []
+    loses = []
     state = matr[:]
-    plays = list()
-    search_solutions(state,plays,solutions)
+    solution = None
+    if mode == 'standart':
+        plays = list()
+        search_solutions(state,plays,solutions, loses)
+        solution = random.choice(solutions)[0]
+    elif mode == 'random':
+        solution = random_sol(state)
+    elif mode == 'minmax':
+        pass
+    return solution
 
-    return solutions
+def random_sol(state):
+    sols = []
+    for i, column in enumerate(state):
+        for j, elem in enumerate(column):
+            if state[i][j] == 0:
+                sols.append((i,j))
+    return random.choice(sols)
 
-def search_solutions(state,plays,solutions):
+def search_solutions(state,plays,solutions, loses):
     candidates = get_candidates(state)
     for c_move in candidates:
-        matr[c_move[0]][c_move[1]] = 1
+        state[c_move[0]][c_move[1]] = 1
         plays.append(c_move)
         for p_move in candidates:
             if p_move != c_move:
                 plays.append(p_move)
-                matr[p_move[0]][p_move[1]] = 2
+                state[p_move[0]][p_move[1]] = 2
                 if check_win(state):
                     solutions.append(plays)
-                    plays = plays[:-2]
-                    return True
                 elif check_lose(state):
-                    plays = plays[:-2]
-                    return False
+                    loses.append(plays)
                 else:
-                    search_solutions(state,plays,solutions)
-                    plays = plays[:-2]
-                matr[p_move[0]][p_move[1]] = 0
-        matr[c_move[0]][c_move[1]] = 0
+                    plays = search_solutions(state,plays,solutions,loses)
+
+                plays = plays[:-1]
+                state[p_move[0]][p_move[1]] = 0
+        state[c_move[0]][c_move[1]] = 0
+        plays = plays[:-1]
+    return plays
 
 
 # def check_state(state, solutions, win_lines):
@@ -82,7 +99,5 @@ def get_candidates(state):
     return candidates
 
 
-sols = AI_get_solutions(matr)
-
-
-print('change for kiryll')
+solution = AI_get_solutions(matr)
+print(solution)
