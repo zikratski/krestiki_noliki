@@ -8,8 +8,9 @@ def play():
     while True:
         if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
             break
-        inp = input('i,j')
-        matr_zero[int(inp[0])][int(inp[-1])] = 2
+        ii = input('i: ')
+        ij = input('j: ')
+        matr_zero[int(ii)][int(ij)] = 2
         print(matr_zero)
         print()
         bm = algo2.best_move(matr_zero)
