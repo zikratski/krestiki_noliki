@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 matr = np.zeros((3,3))
@@ -13,7 +15,8 @@ def AI_get_solutions(matr):
     state = matr[:]
     plays = list()
     search_solutions(state,plays,solutions, loses)
-    return solutions
+    solution = random.choice(solutions)[0]
+    return solution
 
 def search_solutions(state,plays,solutions, loses):
     candidates = get_candidates(state)
@@ -82,10 +85,5 @@ def get_candidates(state):
     return candidates
 
 
-sols = AI_get_solutions(matr)
-i = 0
-for elem in sols:
-    i += 1
-    print(elem)
-    if i == 20:
-        break
+solution = AI_get_solutions(matr)
+print(solution)
