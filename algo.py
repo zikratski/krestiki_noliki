@@ -90,6 +90,10 @@ def check_lose(state):
         return True
     else:
         return False
+
+def check_tie(state):
+    if 0 not in state and not check_lose(state) and not check_win(state):
+        return True
 def get_candidates(state):
     candidates = []
     for i, column in enumerate(state):
