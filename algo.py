@@ -81,8 +81,9 @@ def check_lose(state):
     for column in state:
         if np.array_equal(column, np.array([2,2,2])):
             return True
-    for row in state[:,]:
-        if np.array_equal(row, np.array([2,2,2])):
+    for col_index in range(state.shape[1]):
+        column = state[:, col_index]
+        if np.array_equal(column, np.array([2,2,2])):
             return True
     if state[0][0] == state[1][1] == state[2][2] == 2:
         return True
@@ -105,3 +106,6 @@ def get_candidates(state):
 
 #solution = AI_get_solutions(matr)
 #print(solution)
+
+matr_ex = np.array([[1,2,1],[1,2,0],[2,2,0]])
+check_lose(matr_ex)
