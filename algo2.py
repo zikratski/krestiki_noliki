@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import algo
 
@@ -7,9 +9,13 @@ def best_move(state):
     chances = {'ai':0,'person':0,'tie':0}
     minimax(state, 0, True, chances)
     chances_sum = sum(chances.values())
+    #print(f'sum:{chances_sum}')
     for key, value in chances.items():
         chances[key] = round((100 / chances_sum) * value, 2)
-    print(f"chances in proc: {chances}")
+    print(f"chances in proc: \n"
+          f"ai: {chances['ai']}%\n"
+          f"person: {chances['person']}%\n"
+          f"tie: {chances['tie']}%\n")
     inf = float('inf')
     best_score = -inf
     score = None
@@ -20,6 +26,8 @@ def best_move(state):
                 state[i][j] = ai
                 score = minimax(state, 0, False, chances)
                 state[i][j] = 0
+                if score > 0:
+                    return (i,j)
                 if (score > best_score):
                     best_score = score
                     move = (i,j)
@@ -49,6 +57,8 @@ def minimax(state, depth, isMaximazing, chances):
                     state[i][j] = ai
                     score = minimax(state, depth+1, False, chances)
                     state[i][j] = 0
+                    if score > 0:
+                        return score
                     best_score = max(score,best_score)
         return best_score
     else:
@@ -61,18 +71,23 @@ def minimax(state, depth, isMaximazing, chances):
                     state[i][j] = pers
                     score = minimax(state, depth + 1, True, chances)
                     state[i][j] = 0
+                    if score < 0:
+                        return score
                     best_score = min(score, best_score)
         return best_score
 
 if __name__ == '__main__':
     matr = np.array([[1,0,0],[2,0,1],[1,0,2]])
-
-    matr_ex = np.array([[2,1,2],[2,1,0],[1,0,0]])
-    bestmove = best_move(matr_ex)
-    print(bestmove)
-    # matr_zero = np.zeros_like(matr)
+    #
+    # # matr_ex = np.array([[2,1,2],[2,1,0],[1,0,0]])
+    # # bestmove = best_move(matr_ex)
+    # # print(bestmove)
+    matr_zero = np.zeros_like(matr)
+    # #matr_zero[0][0] = 2
+    # st = time.time()
     # bestmove = best_move(matr_zero)
-    # print(bestmove)
+    # end = time.time()
+    # print(bestmove, f"time: {end-st}")
 
     # chances = {'ai': 0, 'person': 12, 'tie': 34}
     # chances_sum = sum(chances.values())
@@ -80,16 +95,16 @@ if __name__ == '__main__':
     #     chances[key] = round((100 / chances_sum) * value, 2)
     # print(f"chances in proc: {chances}")
 
-    # while True:
-    #     if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
-    #         break
-    #     inp = input('i,j')
-    #     matr_zero[int(inp[0])][int(inp[-1])] = 2
-    #     print(matr_zero)
-    #     print()
-    #     best_move(matr_zero)
-    #     print(matr_zero)
-    #     print()
+    while True:
+        if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
+            break
+        inp = input('i,j')
+        matr_zero[int(inp[0])][int(inp[-1])] = 2
+        print(matr_zero)
+        print()
+        best_move(matr_zero)
+        print(matr_zero)
+        print()
 
 
 
