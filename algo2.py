@@ -34,6 +34,7 @@ def best_move(state):
     #state[move[0]][move[1]] = ai
     return move
 def minimax(state, depth, isMaximazing, chances):
+    # if depth == 1:
     win_ai = algo.check_win(state)
     win_per = algo.check_lose(state)
     win_tie = algo.check_tie(state)
