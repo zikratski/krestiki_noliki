@@ -1,9 +1,8 @@
 import random
-
 import numpy as np
 
-matr = np.zeros((3,3))
-#print(matr)
+import algo2
+
 
 
 
@@ -17,11 +16,12 @@ def AI_get_solutions(matr, mode='standart'):
     if mode == 'standart':
         plays = list()
         search_solutions(state,plays,solutions, loses)
+        print(f"len solutions: {len(solutions)}")
         solution = random.choice(solutions)[0]
     elif mode == 'random':
         solution = random_sol(state)
     elif mode == 'minmax':
-        pass
+        solution = algo2.best_move(state)
     return solution
 
 def random_sol(state):
@@ -104,8 +104,9 @@ def get_candidates(state):
     return candidates
 
 
-#solution = AI_get_solutions(matr)
-#print(solution)
-
-matr_ex = np.array([[1,2,1],[1,2,0],[2,2,0]])
-check_lose(matr_ex)
+if __name__ == '__main__':
+    matr = np.zeros((3, 3))
+    #print(matr)
+    solution = AI_get_solutions(matr, mode = 'minmax')
+    print('i am here')
+    print(solution)

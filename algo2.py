@@ -17,7 +17,8 @@ def best_move(state):
                 if (score > best_score):
                     best_score = score
                     move = (i,j)
-    state[move[0]][move[1]] = ai
+    #state[move[0]][move[1]] = ai
+    return move
 def minimax(state, depth, isMaximazing):
     win_ai = algo.check_win(state)
     win_per = algo.check_lose(state)
@@ -58,19 +59,22 @@ if __name__ == '__main__':
     matr = np.array([[1,0,0],[2,0,1],[1,0,2]])
 
     matr_ex = np.array([[1,2,1],[0,2,0],[2,0,0]])
-    best_move(matr_ex)
-
+    bestmove = best_move(matr_ex)
+    print(bestmove)
     matr_zero = np.zeros_like(matr)
-    while True:
-        if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
-            break
-        inp = input('i,j')
-        matr_zero[int(inp[0])][int(inp[-1])] = 2
-        print(matr_zero)
-        print()
-        best_move(matr_zero)
-        print(matr_zero)
-        print()
+    bestmove = best_move(matr_zero)
+    print(bestmove)
+
+    # while True:
+    #     if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
+    #         break
+    #     inp = input('i,j')
+    #     matr_zero[int(inp[0])][int(inp[-1])] = 2
+    #     print(matr_zero)
+    #     print()
+    #     best_move(matr_zero)
+    #     print(matr_zero)
+    #     print()
 
 
 
