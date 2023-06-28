@@ -7,3 +7,6 @@ print('smth else to commint')
 
 print('trying smth new in another branch')
 
+
+print("lera")
+print('ok ok ')
