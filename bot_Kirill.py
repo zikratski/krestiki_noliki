@@ -55,3 +55,4 @@ if __name__ == "__main__":
     # бесконечная работа бота
 
     bot.infinity_polling()
+
