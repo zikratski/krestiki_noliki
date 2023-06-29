@@ -5,17 +5,18 @@ import algo
 
 ai = 1
 pers = 2
-def best_move(state):
-    chances = {'ai':0,'person':0,'tie':0}
-    minimax(state, 0, True, chances)
-    chances_sum = sum(chances.values())
-    #print(f'sum:{chances_sum}')
-    for key, value in chances.items():
-        chances[key] = round((100 / chances_sum) * value, 2)
-    print(f"chances in proc: \n"
-          f"ai: {chances['ai']}%\n"
-          f"person: {chances['person']}%\n"
-          f"tie: {chances['tie']}%\n")
+def best_move(state, chances_out=True):
+    chances = {'ai': 0, 'person': 0, 'tie': 0}
+    if chances_out:
+        score = minimax(state, 0, True, chances)
+        chances_sum = sum(chances.values())
+        #print(f'sum:{chances_sum}')
+        for key, value in chances.items():
+            chances[key] = round((100 / chances_sum) * value, 2)
+        print(f"chances in proc: \n"
+              f"ai: {chances['ai']}%\n"
+              f"person: {chances['person']}%\n"
+              f"tie: {chances['tie']}%\n")
     inf = float('inf')
     best_score = -inf
     score = None
@@ -84,6 +85,8 @@ if __name__ == '__main__':
     # # bestmove = best_move(matr_ex)
     # # print(bestmove)
     matr_zero = np.zeros_like(matr)
+    matr_problem = np.array([[1,0,2],[0,2,0],[0,0,0]])
+    bestmove = best_move(matr_problem, False)
     # #matr_zero[0][0] = 2
     # st = time.time()
     # bestmove = best_move(matr_zero)

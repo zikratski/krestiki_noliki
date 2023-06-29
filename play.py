@@ -5,6 +5,7 @@ import algo, algo2
 def play():
     matr = np.array([[1, 0, 0], [2, 0, 1], [1, 0, 2]])
     matr_zero = np.zeros_like(matr)
+    print(matr_zero)
     while True:
         if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
             break
