@@ -13,6 +13,7 @@ field = None
 symbol_person = None
 symbol_ai = None
 graphics_mode = "standart"
+dict_commands = {'1': (0, 0), '2': (0, 1), '3': (0, 2), '4': (1, 0), '5': (1, 1), '6': (1, 2), '7': (2, 0), '8': (2, 1), '9': (2, 2)}
 
 
 
@@ -157,53 +158,48 @@ def choose_field(message):
 
 # Выбор фигуры, за которую будет играть пользователь и ИИ
 def choose_figure(message):
+    global symbol_person
+    global symbol_ai
+    global graphics_mode
+    global btns
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+            types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+            types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
+    markup.add(*btns)
     if (message.text == "Крестики"):
-        global symbol_person
-        global symbol_ai
-        global graphics_mode
         symbol_person = 1
         symbol_ai = 2
         msg = bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
-        bot.register_next_step_handler(msg, play_bot)
+
     elif (message.text == "Нолики"):
         symbol_person = 2
         symbol_ai = 1
         msg = bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
-        bot.register_next_step_handler(msg, play_bot)
+
     elif (message.text == "Дамблдор"):
         symbol_person = 1
         symbol_ai = 2
         graphics_mode = "HP"
         msg = bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
-        bot.register_next_step_handler(msg, play_bot)
     elif (message.text) == "Северус Снегг":
         symbol_person = 2
         symbol_ai = 1
         graphics_mode = "HP"
         msg = bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
-        bot.register_next_step_handler(msg, play_bot)
+    msg = bot.send_message(message.chat.id, 'Хорошей вам игры!', reply_markup=markup)
+    bot.register_next_step_handler(msg, show_and_replace_btn)
+
+def show_and_replace_btn(message):
+    global dict_commands
+    if (message.text == button for button in dict_commands.keys()):
+        btns[int(message.text) - 1] = types.KeyboardButton(" ")
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(*btns)
+        msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
+        bot.register_next_step_handler(msg, show_and_replace_btn)
 
 
-#Функция для игры в крестики-ноликиin future
-
-#def play_bot(mode, difficult, field, symbol_person, symbol_ai, graphics_mode):
-
-    #algo.check_tie()
-#     matr = np.zeros_like(np.eye(int(field[0])))
-#     while True:
-#     # кидает картинку в чат используя graphic.graph(matr)
-#     #pers_move =  принимает координаты пользователя
-#     pers_move = None
-#     matr[pers_move[0]][pers_move[1]] = symbol_person
-#     #рисует картинку
-#     ai_move = play.comp_move(matr,level=difficult,ai=symbol_ai,pers=symbol_person)
-#     matr[ai_move[0]][ai_move[1]] = symbol_ai
-#     # рисует картинку
-#     else:
-#         pass
-
-def play_bot(mode, difficult, field, symbol_person, symbol_ai, graphics_mode):
-    dict_commands = {'1':(0,0),'2':(0,1),'3':(0,2),'4':(1,0),'5':(1,1),'6':(1,2),'7':(2,0),'8':(2,1),'9':(2,2)}
     which_move = 'person'
     matr = np.zeros_like(np.eye(int(field[0])))
     while True:
