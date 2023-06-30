@@ -1,5 +1,8 @@
+import numpy as np
 import telebot
-# import play
+
+import algo
+import play, graphic
 from telebot import types
 
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
@@ -7,6 +10,10 @@ from telebot import types
 mode = None
 difficult = None
 field = None
+symbol_person = None
+symbol_ai = None
+graphics_mode = "standart"
+
 
 # Токена для телеграмма
 bot = telebot.TeleBot('6064467428:AAF8R7L7dLDJQ_3OqoJSxwWZYE_IeVmxfKQ')
@@ -29,6 +36,9 @@ def func(message):
     global mode
     global difficult
     global field
+    global symbol_person
+    global symbol_ai
+    global graphics_mode
     if (message.text == "Начать игру"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
 
@@ -63,55 +73,60 @@ def func(message):
 
 # Если пользователь выбрал режим Лёгкий
     elif (message.text == "Лёгкий"):
+        difficult = "Лёгкий"
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
         button2 = types.KeyboardButton("Бесконечное(в разработке)")
-        keyboard.add(button1, button2)
+        back = types.KeyboardButton("Вернуться к выбору сложности")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        keyboard.add(button1, button2, back, back_to_menu)
         bot.send_message(message.chat.id, text="Выберите размер игрового поля: ", reply_markup=keyboard)
 
 
+    elif (message.text == "Вернуться к выбору сложности"):
+        kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        b1 = types.KeyboardButton("Лёгкий")
+        b2 = types.KeyboardButton("Анриал(бот унижает)")
+        back = types.KeyboardButton("Вернуться к выбору режима")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        kb.add(b1, b2, back, back_to_menu)
+        bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
+
 # Если пользователь выбрал 3x3
     elif (message.text == "3x3"):
+        field = "3x3"
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("Крестики")
         btn2 = types.KeyboardButton("Нолики")
-        kb.add(btn1, btn2)
+        btn3 = types.KeyboardButton("Дамблдор")
+        btn4 = types.KeyboardButton("Северус Снегг")
+        kb.add(btn1, btn2, btn3, btn4)
         bot.send_message(message.chat.id, text="Выберите за кого хотите играть: ", reply_markup=kb)
 
-    elif (message.text == "Крестики" or message.text == "Нолики"):
-        markup = types.InlineKeyboardMarkup(row_width=3)
-        btn1 = types.InlineKeyboardButton("1", callback_data='1')
-        btn2 = types.InlineKeyboardButton("2", callback_data='2')
-        btn3 = types.InlineKeyboardButton("3", callback_data='3')
-        btn4 = types.InlineKeyboardButton("4", callback_data='4')
-        btn5 = types.InlineKeyboardButton("5", callback_data='5')
-        btn6 = types.InlineKeyboardButton("6", callback_data='6')
-        btn7 = types.InlineKeyboardButton("7", callback_data='7')
-        btn8 = types.InlineKeyboardButton("8", callback_data='8')
-        btn9 = types.InlineKeyboardButton("9", callback_data='9')
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9)
-        bot.send_message(message.chat.id, "Удачной игры, поле внизу!!", reply_markup=markup)
+# Выбор фигуры, за которую будет играть пользователь и ИИ
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    elif (message.text == "Крестики"):
+        symbol_person = 1
+        symbol_ai = 2
+        msg = bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
+        bot.register_next_step_handler(msg, play_bot)
+    elif (message.text == "Нолики"):
+        symbol_person = 2
+        symbol_ai = 1
+        msg = bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
+        bot.register_next_step_handler(msg, play_bot)
+    elif (message.text == "Дамблдор"):
+        symbol_person = 1
+        symbol_ai = 2
+        graphics_mode = "HP"
+        msg = bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
+        bot.register_next_step_handler(msg, play_bot)
+    elif (message.text) == "Северус Снегг":
+        symbol_person = 2
+        symbol_ai = 1
+        graphics_mode = "HP"
+        msg = bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
+        bot.register_next_step_handler(msg, play_bot)
 
 
 
@@ -142,21 +157,24 @@ def func(message):
         bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
 
 
-
 #Функция для игры в крестики-нолики(in future)
-# def game(message, mode):
-#     if mode == "c ботом":
-#         bot.send_message(message.chat.id, f'Вы будете играть {mode}')
-#     elif mode == "c другом(одно устройство)":
-#         bot.send_message(message.chat.id, f'Вы будете играть {mode}')
+
+def play_bot(mode, difficult, field, symbol_person, symbol_ai, graphics_mode):
+    algo.check_tie()
+    matr = np.zeros_like(np.eye(int(field[0])))
+    while True:
+    # кидает картинку в чат используя graphic.graph(matr)
+    #pers_move =  принимает координаты пользователя
+    pers_move = None
+    matr[pers_move[0]][pers_move[1]] = symbol_person
+    #рисует картинку
+    ai_move = play.comp_move(matr,level=difficult,ai=symbol_ai,pers=symbol_person)
+    matr[ai_move[0]][ai_move[1]] = symbol_ai
+    # рисует картинку
+    else:
+        pass
 
 
-
-
-# def repeat(message):
-#     bot.send_message(message.chat.id, message.text)
-#
-#
 if __name__ == "__main__":
     # бесконечная работа бота
 
