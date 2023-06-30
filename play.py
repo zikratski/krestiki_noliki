@@ -1,6 +1,8 @@
 import numpy as np
 
 import algo, algo2
+import graphic
+
 
 def play(mode):
     matr = np.array([[1, 0, 0], [2, 0, 1], [1, 0, 2]])
@@ -12,7 +14,8 @@ def play(mode):
     while True:
         if algo.check_win(state) or algo.check_lose(state) or algo.check_tie(state):
             break
-        print(state)
+        #print(state)
+        graphic.graph(state)
         show_stats = int(input('Print 1 to show stats else 0: '))
         if which_move == 'person':
             if show_stats:
