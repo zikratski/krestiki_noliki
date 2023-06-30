@@ -5,18 +5,18 @@ import algo
 
 ai = 1
 pers = 2
-def best_move(state, chances_out=True):
-    chances = {'ai': 0, 'person': 0, 'tie': 0}
-    if chances_out:
-        score = minimax(state, 0, True, chances)
-        chances_sum = sum(chances.values())
-        #print(f'sum:{chances_sum}')
-        for key, value in chances.items():
-            chances[key] = round((100 / chances_sum) * value, 2)
-        print(f"chances in proc: \n"
-              f"ai: {chances['ai']}%\n"
-              f"person: {chances['person']}%\n"
-              f"tie: {chances['tie']}%\n")
+def best_move(state, chances_out=False):
+    # chances = {'ai': 0, 'person': 0, 'tie': 0}
+    # if chances_out:
+    #     score = minimax(state, 0, True, chances)
+    #     chances_sum = sum(chances.values())
+    #     #print(f'sum:{chances_sum}')
+    #     for key, value in chances.items():
+    #         chances[key] = round((100 / chances_sum) * value, 2)
+    #     print(f"chances in proc: \n"
+    #           f"ai: {chances['ai']}%\n"
+    #           f"person: {chances['person']}%\n"
+    #           f"tie: {chances['tie']}%\n")
     inf = float('inf')
     best_score = -inf
     score = None
@@ -25,7 +25,7 @@ def best_move(state, chances_out=True):
         for j, elem in enumerate(column):
             if state[i][j] == 0:
                 state[i][j] = ai
-                score = minimax(state, 0, False, chances)
+                score = minimax(state, 0, False)
                 state[i][j] = 0
                 if score > 0:
                     return (i,j)
@@ -77,6 +77,49 @@ def minimax(state, depth, isMaximazing, chances):
                         return score
                     best_score = min(score, best_score)
         return best_score
+
+def get_stats(state, move='ai'):
+    chances = {'ai': 0, 'person': 0, 'tie': 0}
+    get_all_possibles(state, chances, move=move)
+    chances_sum = sum(chances.values())
+    print(f'sum:{chances_sum}')
+    for key, value in chances.items():
+        chances[key] = round((100 / chances_sum) * value, 2)
+    print(f"chances in proc: \n"
+          f"ai: {chances['ai']}%\n"
+          f"person: {chances['person']}%\n"
+          f"tie: {chances['tie']}%\n")
+
+def get_all_possibles(state, chances, move):
+    win_ai = algo.check_win(state)
+    win_per = algo.check_lose(state)
+    win_tie = algo.check_tie(state)
+    if win_ai:
+        chances['ai'] += 1
+        return
+    elif win_per:
+        chances['person'] += 1
+        return
+    elif win_tie:
+        chances['tie'] += 1
+        return
+
+    if move == 'ai':
+        for i, column in enumerate(state):
+            for j, elem in enumerate(column):
+                if state[i][j] == 0:
+                    state[i][j] = ai
+                    get_all_possibles(state, chances, move='person')
+                    state[i][j] = 0
+        return
+    else:
+        for i, column in enumerate(state):
+            for j, elem in enumerate(column):
+                if state[i][j] == 0:
+                    state[i][j] = pers
+                    get_all_possibles(state, chances, move='ai')
+                    state[i][j] = 0
+        return
 
 if __name__ == '__main__':
     matr = np.array([[1,0,0],[2,0,1],[1,0,2]])
