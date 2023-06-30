@@ -67,8 +67,9 @@ def check_win(state):
     for column in state:
         if np.array_equal(column, np.array([1,1,1])):
             return True
-    for row in state[:,]:
-        if np.array_equal(row, np.array([1,1,1])):
+    for col_index in range(state.shape[1]):
+        column = state[:, col_index]
+        if np.array_equal(column, np.array([1, 1, 1])):
             return True
     if state[0][0] == state[1][1] == state[2][2] == 1:
         return True
@@ -95,6 +96,8 @@ def check_lose(state):
 def check_tie(state):
     if 0 not in state and not check_lose(state) and not check_win(state):
         return True
+    else:
+        return False
 def get_candidates(state):
     candidates = []
     for i, column in enumerate(state):
