@@ -5,7 +5,7 @@ import algo
 
 ai = 1
 pers = 2
-def best_move(state, chances_out=False):
+def best_move(state):
     # chances = {'ai': 0, 'person': 0, 'tie': 0}
     # if chances_out:
     #     score = minimax(state, 0, True, chances)
@@ -34,19 +34,16 @@ def best_move(state, chances_out=False):
                     move = (i,j)
     #state[move[0]][move[1]] = ai
     return move
-def minimax(state, depth, isMaximazing, chances):
+def minimax(state, depth, isMaximazing):
     # if depth == 1:
     win_ai = algo.check_win(state)
     win_per = algo.check_lose(state)
     win_tie = algo.check_tie(state)
     if win_ai:
-        chances['ai'] += 1
         return 1
     elif win_per:
-        chances['person'] += 1
         return -1
     elif win_tie:
-        chances['tie'] += 1
         return 0
 
     if isMaximazing:
@@ -57,7 +54,7 @@ def minimax(state, depth, isMaximazing, chances):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    score = minimax(state, depth+1, False, chances)
+                    score = minimax(state, depth+1, False)
                     state[i][j] = 0
                     if score > 0:
                         return score
@@ -71,7 +68,7 @@ def minimax(state, depth, isMaximazing, chances):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = pers
-                    score = minimax(state, depth + 1, True, chances)
+                    score = minimax(state, depth + 1, True)
                     state[i][j] = 0
                     if score < 0:
                         return score
@@ -129,7 +126,7 @@ if __name__ == '__main__':
     # # print(bestmove)
     matr_zero = np.zeros_like(matr)
     matr_problem = np.array([[1,0,2],[0,2,0],[0,0,0]])
-    bestmove = best_move(matr_problem, False)
+    bestmove = best_move(matr_problem)
     # #matr_zero[0][0] = 2
     # st = time.time()
     # bestmove = best_move(matr_zero)

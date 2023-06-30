@@ -9,6 +9,7 @@ def play():
     while True:
         if algo.check_win(matr_zero) or algo.check_lose(matr_zero) or algo.check_tie(matr_zero):
             break
+        algo2.get_stats(state=matr_zero,move='person')
         ii = input('i: ')
         ij = input('j: ')
         matr_zero[int(ii)][int(ij)] = 2
@@ -21,15 +22,17 @@ def play():
 
 def comp_move(matr,level='extreme',stats_show='False'):
     state = matr[:]
+    move = None
     if stats_show:
-        pass
+        algo2.get_stats(state,move='ai')
     if level == 'random':
         move = algo.random_sol(state)
     elif level == 'easy':
         pass
     elif level == 'extreme':
         move = algo2.best_move(state)
-
+    state[move[0]][move[1]] = 1
+    return state
 
 
 if __name__ == '__main__':
