@@ -63,38 +63,38 @@ def search_solutions(state,plays,solutions, loses):
 #     return False
 
 
-def check_win(state):
+def check_win(state, ai=1):
     for column in state:
-        if np.array_equal(column, np.array([1,1,1])):
+        if np.array_equal(column, np.array([ai,ai,ai])):
             return True
     for col_index in range(state.shape[1]):
         column = state[:, col_index]
-        if np.array_equal(column, np.array([1, 1, 1])):
+        if np.array_equal(column, np.array([ai,ai,ai])):
             return True
-    if state[0][0] == state[1][1] == state[2][2] == 1:
+    if state[0][0] == state[1][1] == state[2][2] == ai:
         return True
-    elif state[0][2] == state[1][1] == state[2][0] == 1:
+    elif state[0][2] == state[1][1] == state[2][0] == ai:
         return True
     else:
         return False
 
-def check_lose(state):
+def check_lose(state,pers=2):
     for column in state:
-        if np.array_equal(column, np.array([2,2,2])):
+        if np.array_equal(column, np.array([pers,pers,pers])):
             return True
     for col_index in range(state.shape[1]):
         column = state[:, col_index]
-        if np.array_equal(column, np.array([2,2,2])):
+        if np.array_equal(column, np.array([pers,pers,pers])):
             return True
-    if state[0][0] == state[1][1] == state[2][2] == 2:
+    if state[0][0] == state[1][1] == state[2][2] == pers:
         return True
-    elif state[0][2] == state[1][1] == state[2][0] == 2:
+    elif state[0][2] == state[1][1] == state[2][0] == pers:
         return True
     else:
         return False
 
-def check_tie(state):
-    if 0 not in state and not check_lose(state) and not check_win(state):
+def check_tie(state,ai=1,pers=2):
+    if 0 not in state and not check_lose(state,pers) and not check_win(state,ai):
         return True
     else:
         return False
