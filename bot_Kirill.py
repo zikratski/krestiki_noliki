@@ -1,8 +1,8 @@
 import numpy as np
 import telebot
 
-import algo
-#import play, graphic
+import algo, algo2
+import play, graphic
 from telebot import types
 
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
@@ -30,8 +30,8 @@ def start(message):
     markup.add(btn1, btn2, btn3)
     bot.send_message(message.chat.id,
                      text= f"Привет! Я тестовый бот для тебя, {message.from_user.first_name}!", reply_markup=markup)
-    photo = open('C:/Users/Kirill/Desktop/XsOs.jpg', 'rb')
-    bot.send_photo(message.chat.id, photo)
+    #photo = open('C:/Users/Kirill/Desktop/XsOs.jpg', 'rb')
+    #bot.send_photo(message.chat.id, photo)
 
 @bot.message_handler(content_types=['text'])
 def choose_func(message):
@@ -201,6 +201,32 @@ def choose_figure(message):
 #     # рисует картинку
 #     else:
 #         pass
+
+def play_bot(mode, difficult, field, symbol_person, symbol_ai, graphics_mode):
+    dict_commands = {'1':(0,0),'2':(0,1),'3':(0,2),'4':(1,0),'5':(1,1),'6':(1,2),'7':(2,0),'8':(2,1),'9':(2,2)}
+    which_move = 'person'
+    matr = np.zeros_like(np.eye(int(field[0])))
+    while True:
+
+        if algo.check_win(matr, ai=symbol_ai) or algo.check_lose(matr, pers=symbol_person) or algo.check_tie(matr, ai=symbol_ai, pers=symbol_person):
+            break
+        # print(state)
+        #graphic.graph(state)
+
+        if which_move == 'person':
+            # show_stats = int(input('Print 1 to show stats else 0: '))
+            # if show_stats:
+            #     algo2.get_stats(matr, 'person')
+
+            command = ('1','2')
+            i = dict_commands[command[0]]
+            j = dict_commands[command[1]]
+            matr[i][j] = symbol_person
+            which_move = 'ai'
+        elif which_move == 'ai':
+            ij = algo2.best_move(matr, mode, pers=symbol_person, ai=symbol_ai)
+            matr[ij[0]][ij[1]] = symbol_ai
+            which_move = 'person'
 
 
 if __name__ == "__main__":
