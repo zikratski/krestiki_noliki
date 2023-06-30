@@ -5,7 +5,7 @@ def krestiki(coord:tuple):
     plt.plot(coord[0], coord[1], "gx", markersize = 45, markeredgewidth = 4)
 
 def noliki(coord: tuple):
-    plt.plot(coord[0], coord[1] ,"o",c = 'teal', markersize = 45, fillstyle = 'none', markeredgewidth = 4)
+    plt.plot(coord[0], coord[1],"o",c = 'teal', markersize = 45, fillstyle = 'none', markeredgewidth = 4)
 
 def sewerus(coord: tuple):
     ax = plt.gca()
