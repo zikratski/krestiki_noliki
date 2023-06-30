@@ -1,9 +1,8 @@
 import numpy as np
 import algo
 #sum_score = 0
-ai = 1
-pers = 2
-def best_move(state, mode='extreme'):
+
+def best_move(state, mode='extreme',pers=2,ai=1):
     inf = float('inf')
     score = None
     move = None
@@ -13,7 +12,7 @@ def best_move(state, mode='extreme'):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    score = minimax(state, 0, False)
+                    score = minimax(state, 0, False,pers,ai)
                     state[i][j] = 0
                     if score > 0:
                         return (i,j)
@@ -26,7 +25,7 @@ def best_move(state, mode='extreme'):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    score = minimax_lose(state, 0, True)
+                    score = minimax_lose(state, 0, True,pers,ai)
                     state[i][j] = 0
                     if score < 0:
                         return (i,j)
@@ -36,11 +35,11 @@ def best_move(state, mode='extreme'):
     if mode == 'random':
         move = algo.random_sol(state)
     return move
-def minimax(state, depth, isMaximazing):
+def minimax(state, depth, isMaximazing, pers, ai):
     # if depth == 1:
-    win_ai = algo.check_win(state)
-    win_per = algo.check_lose(state)
-    win_tie = algo.check_tie(state)
+    win_ai = algo.check_win(state, ai=ai)
+    win_per = algo.check_lose(state,pers=pers)
+    win_tie = algo.check_tie(state,ai=ai,pers=pers)
     #global sum_score
     if win_ai:
         #sum_score +=1
@@ -60,7 +59,7 @@ def minimax(state, depth, isMaximazing):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    score = minimax(state, depth+1, False)
+                    score = minimax(state, depth+1, False, pers, ai)
                     state[i][j] = 0
                     if score > 0:
                         return score
@@ -74,17 +73,17 @@ def minimax(state, depth, isMaximazing):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = pers
-                    score = minimax(state, depth + 1, True)
+                    score = minimax(state, depth + 1, True, pers, ai)
                     state[i][j] = 0
                     if score < 0:
                         return score
                     best_score = min(score, best_score)
         return best_score
 
-def minimax_lose(state, depth, isMaximazing):
-    win_ai = algo.check_win(state)
-    win_per = algo.check_lose(state)
-    win_tie = algo.check_tie(state)
+def minimax_lose(state, depth, isMaximazing,pers,ai):
+    win_ai = algo.check_win(state,ai)
+    win_per = algo.check_lose(state,pers)
+    win_tie = algo.check_tie(state,ai,pers)
     if win_ai:
         return 1
     elif win_per:
@@ -100,7 +99,7 @@ def minimax_lose(state, depth, isMaximazing):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = pers
-                    score = minimax_lose(state, depth+1, False)
+                    score = minimax_lose(state, depth+1, False,pers,ai)
                     state[i][j] = 0
                     if score < 0:
                         return score
@@ -114,16 +113,16 @@ def minimax_lose(state, depth, isMaximazing):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    score = minimax_lose(state, depth + 1, True)
+                    score = minimax_lose(state, depth + 1, True,pers,ai)
                     state[i][j] = 0
                     if score < 0:
                         return score
                     best_score = min(score, best_score)
         return best_score
 
-def get_stats(state, move='ai'):
+def get_stats(state, move='ai',pers=2,ai=1):
     chances = {'ai': 0, 'person': 0, 'tie': 0}
-    get_all_possibles(state, chances, move=move)
+    get_all_possibles(state, chances, move=move,pers=pers,ai=ai)
     chances_sum = sum(chances.values())
     print(f'sum:{chances_sum}')
     for key, value in chances.items():
@@ -133,10 +132,10 @@ def get_stats(state, move='ai'):
           f"person: {chances['person']}%\n"
           f"tie: {chances['tie']}%\n")
 
-def get_all_possibles(state, chances, move):
-    win_ai = algo.check_win(state)
-    win_per = algo.check_lose(state)
-    win_tie = algo.check_tie(state)
+def get_all_possibles(state, chances, move,pers,ai):
+    win_ai = algo.check_win(state,ai)
+    win_per = algo.check_lose(state,pers)
+    win_tie = algo.check_tie(state,ai,pers)
     if win_ai:
         chances['ai'] += 1
         return
@@ -152,7 +151,7 @@ def get_all_possibles(state, chances, move):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = ai
-                    get_all_possibles(state, chances, move='person')
+                    get_all_possibles(state, chances, move='person',pers=pers,ai=ai)
                     state[i][j] = 0
         return
     else:
@@ -160,7 +159,7 @@ def get_all_possibles(state, chances, move):
             for j, elem in enumerate(column):
                 if state[i][j] == 0:
                     state[i][j] = pers
-                    get_all_possibles(state, chances, move='ai')
+                    get_all_possibles(state, chances, move='ai',pers=pers,ai=ai)
                     state[i][j] = 0
         return
 
