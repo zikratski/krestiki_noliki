@@ -12,7 +12,7 @@ def play(mode,pers=2,ai=1):
     print('Welcom to the tic tac toe game!')
     which_move = input('Who is moving first?\nPrint ai or person: ')
     while True:
-        if algo.check_win(state) or algo.check_lose(state) or algo.check_tie(state):
+        if algo.check_win(state,ai=ai) or algo.check_lose(state,pers=pers) or algo.check_tie(state,ai=ai,pers=pers):
             break
         #print(state)
         graphic.graph(state)
@@ -46,5 +46,5 @@ def comp_move(matr,level='extreme',stats_show='False',ai=1):
 
 if __name__ == '__main__':
     # mode = 'easy'
-    mode = 'random'
+    mode = 'easy'
     play(mode,pers=1,ai=2)
