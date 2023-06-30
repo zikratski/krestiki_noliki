@@ -19,5 +19,18 @@ def play():
         print(matr_zero)
         print()
 
+def comp_move(matr,level='extreme',stats_show='False'):
+    state = matr[:]
+    if stats_show:
+        pass
+    if level == 'random':
+        move = algo.random_sol(state)
+    elif level == 'easy':
+        pass
+    elif level == 'extreme':
+        move = algo2.best_move(state)
 
-play()
+
+
+if __name__ == '__main__':
+    play()
