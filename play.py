@@ -16,8 +16,9 @@ def play(mode,pers=2,ai=1):
             break
         #print(state)
         graphic.graph(state)
-        show_stats = int(input('Print 1 to show stats else 0: '))
+
         if which_move == 'person':
+            show_stats = int(input('Print 1 to show stats else 0: '))
             if show_stats:
                 algo2.get_stats(state,'person')
             i = int(input('i: '))
@@ -25,8 +26,6 @@ def play(mode,pers=2,ai=1):
             state[i][j] = pers
             which_move = 'ai'
         elif which_move == 'ai':
-            if show_stats:
-                algo2.get_stats(state,'ai',pers=pers,ai=ai)
             ij = algo2.best_move(state, mode,pers=pers,ai=ai)
             state[ij[0]][ij[1]] = ai
             which_move = 'person'
@@ -46,4 +45,6 @@ def comp_move(matr,level='extreme',stats_show='False',ai=1):
 
 
 if __name__ == '__main__':
-    play('extreme')
+    # mode = 'easy'
+    mode = 'random'
+    play(mode,pers=1,ai=2)
