@@ -14,8 +14,9 @@ symbol_person = None
 symbol_ai = None
 graphics_mode = "standart"
 dict_commands = {'1': (0, 0), '2': (0, 1), '3': (0, 2), '4': (1, 0), '5': (1, 1), '6': (1, 2), '7': (2, 0), '8': (2, 1), '9': (2, 2)}
-
-
+matr = np.array(list())
+flag = True
+flag2 = True
 
 
 # Токена для телеграмма
@@ -58,7 +59,7 @@ def choose_func(message):
         msg = bot.send_message(message.chat.id, text="Задай мне вопрос", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_question)
 
-def start(message):
+def return_menu(message):
     if (message.text == "Вернуться в главное меню"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("Начать игру")
@@ -67,6 +68,7 @@ def start(message):
         markup.add(btn1, btn2, btn3)
 
 def choose_question(message):
+
     if (message.text == "Как меня зовут?"):
         msg = bot.send_message(message.chat.id, "Бот для игры в крестики-нолики!!!!")
         bot.register_next_step_handler(msg, choose_question)
@@ -79,7 +81,7 @@ def choose_question(message):
 
         msg = bot.send_message(message.chat.id, text="Возвращаю...")
 
-        bot.register_next_step_handler(msg, start)
+        bot.register_next_step_handler(msg, return_menu)
 
 def choose_gamemode(message):
     global mode
@@ -103,6 +105,7 @@ def choose_gamemode(message):
         bot.register_next_step_handler(msg, choose_field)
 
 def choose_difficulty(message):
+    global difficult
 # Если выбрана кнопка Вернуться к выбору режима
     if (message.text == "Вернуться к выбору режима"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -114,12 +117,22 @@ def choose_difficulty(message):
         bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Вернуться в главное меню"):
-        bot.register_next_step_handler(message.chat.id, start)
+        bot.register_next_step_handler(message.chat.id, return_menu)
 
 # Если пользователь выбрал режим Лёгкий
     elif (message.text == "Лёгкий"):
-        global difficult
-        difficult = "Лёгкий"
+        difficult = "easy"
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        button1 = types.KeyboardButton("3x3")
+        button2 = types.KeyboardButton("Бесконечное(в разработке)")
+        back = types.KeyboardButton("Вернуться к выбору сложности")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        keyboard.add(button1, button2, back, back_to_menu)
+        msg = bot.send_message(message.chat.id, text="Выберите размер игрового поля: ", reply_markup=keyboard)
+        bot.register_next_step_handler(msg, choose_field)
+
+    elif (message.text == "Анриал(бот унижает)"):
+        difficult = "extreme"
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
         button2 = types.KeyboardButton("Бесконечное(в разработке)")
@@ -144,7 +157,9 @@ def choose_difficulty(message):
 def choose_field(message):
     if (message.text == "3x3"):
         global field
+        global matr
         field = "3x3"
+        matr = np.zeros_like(np.eye(int(field[0])))
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("Крестики")
         btn2 = types.KeyboardButton("Нолики")
@@ -162,6 +177,7 @@ def choose_figure(message):
     global symbol_ai
     global graphics_mode
     global btns
+    global flag
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
     btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
             types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
@@ -170,79 +186,94 @@ def choose_figure(message):
     if (message.text == "Крестики"):
         symbol_person = 1
         symbol_ai = 2
-        msg = bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
+        bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
 
     elif (message.text == "Нолики"):
         symbol_person = 2
         symbol_ai = 1
-        msg = bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
+        bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
 
     elif (message.text == "Дамблдор"):
         symbol_person = 1
         symbol_ai = 2
         graphics_mode = "HP"
-        msg = bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
+        bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
     elif (message.text) == "Северус Снегг":
         symbol_person = 2
         symbol_ai = 1
         graphics_mode = "HP"
         bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
-    msg = bot.send_message(message.chat.id, 'Хорошей вам игры!', reply_markup=markup)
-    # bot.register_next_step_handler(msg, start_game)
-    start_game(message)
+    flag = True
+    while True:
+        if flag == True:
+            msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
+            flag = False
+            bot.register_next_step_handler(msg, start_game_person)
+
+    #ЗДЕСЬ ДОЛЖЕН БЫТЬ ВЫХОД В МЕНЮ
 
 
-def start_game(message):
-    bot.send_message(message.chat.id, f"{mode}, {difficult}, {field}, {symbol_person}, {symbol_ai}, {graphics_mode}")
 
 
-# def show_and_replace_btn(message):
-#     global dict_commands
-#     if (message.text == button for button in dict_commands.keys()):
-#         btns[int(message.text) - 1] = types.KeyboardButton(" ")
-#         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#         markup.add(*btns)
-#         msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
-#         bot.register_next_step_handler(msg, start_game)
+def start_game_person(message):
+    global matr
+    global symbol_ai, symbol_person
+    global dict_commands
+    global difficult
+    global flag, flag2
+    state = matr[:]
 
-# def start_game(message):
-#     global dict_commands
-#
-#     which_move = 'person'
-#     matr = np.zeros_like(np.eye(int(field[0])))
-#
-#
-#     while True:
-#
-#         if algo.check_win(matr, ai=symbol_ai) or algo.check_lose(matr, pers=symbol_person) or algo.check_tie(matr, ai=symbol_ai, pers=symbol_person):
-#             break
-#         # print(state)
-#         #graphic.graph(state)
-#
-#         if which_move == 'person':
-#             # show_stats = int(input('Print 1 to show stats else 0: '))
-#             # if show_stats:
-#             #     algo2.get_stats(matr, 'person')
-#             if (message.text == button for button in dict_commands.keys()):
-#                 btns[int(message.text) - 1] = types.KeyboardButton(" ")
-#                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-#                 markup.add(*btns)
-#                 msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}',
-#                                        reply_markup=markup)
-#
-#             command = dict_commands[message.text]
-#             i = command[0]
-#             j = command[1]
-#             matr[i][j] = symbol_person
-#             bot.send_message(message.chat.id, f'ты походил:\n {str(matr)}')
-#             which_move = 'ai'
-#         elif which_move == 'ai':
-#             ij = algo2.best_move(matr, mode, pers=symbol_person, ai=symbol_ai)
-#             matr[ij[0]][ij[1]] = symbol_ai
-#             bot.send_message(message.chat.id, f'походил бот:\n {str(matr)}')
-#             which_move = 'person'
+    command = dict_commands[message.text]
+    i = int(command[0])
+    j = int(command[1])
+    state[i][j] = symbol_person
+    # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВМЕСТО СЛЕД СТРОКИ И ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+    bot.send_message(message.chat.id, f"{str(state)}")
+
+    if algo.check_lose(state, pers=symbol_person):
+        msg = bot.send_message(message.chat.id, 'you have won')
+        # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+        flag2 = False
+
+    elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+        bot.send_message(message.chat.id, 'tie')
+        # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+        flag2 = False
+
+    if flag2:
+        bot.send_message(message.chat.id, 'ход бота: ')
+        start_game_ai(difficult,symbol_person,symbol_ai)
+        # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВМЕСТО СЛЕД СТРОКИ И ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+        bot.send_message(message.chat.id, f"{str(state)}")
+        if algo.check_win(state, ai=symbol_ai):
+            # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+            bot.send_message(message.chat.id, 'ai has won')
+            flag2 = False
+        elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+            bot.send_message(message.chat.id, 'tie')
+            # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+            flag2 = False
+        # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+    if flag2:
+        flag = True
 
 
+def start_game_ai(mode,symbol_person,symbol_ai):
+    global matr
+    state = matr[:]
+    ij = algo2.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
+    state[ij[0]][ij[1]] = symbol_ai
+
+def check_game_situation(state,symbol_person,symbol_ai):
+    ...
+def show_and_replace_btn(message):
+    global dict_commands
+    if (message.text == button for button in dict_commands.keys()):
+        btns[int(message.text) - 1] = types.KeyboardButton(" ")
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(*btns)
+        msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
+        #bot.register_next_step_handler(msg, start_game)
 if __name__ == "__main__":
     # бесконечная работа бота
 
