@@ -1,8 +1,8 @@
 import numpy as np
 import telebot
 
+import graphic
 import algo, algo2
-import play, graphic
 from telebot import types
 
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
@@ -221,48 +221,66 @@ def start_game_person(message):
     global dict_commands
     global difficult
     global flag, flag2
+    global graphics_mode
     state = matr[:]
 
     command = dict_commands[message.text]
     i = int(command[0])
     j = int(command[1])
     state[i][j] = symbol_person
+    graphic.graph(state, graphics_mode)
     # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВМЕСТО СЛЕД СТРОКИ И ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
-    bot.send_message(message.chat.id, f"{str(state)}")
+    photo = open('my_plot.png', 'rb')
+    bot.send_photo(message.chat.id, photo)
 
     if algo.check_lose(state, pers=symbol_person):
         msg = bot.send_message(message.chat.id, 'you have won')
         # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+        # graphic.graph(state, graphics_mode)
+        # photo = open('my_plot.png', 'rb')
+        # bot.send_photo(message.chat.id, photo)
         flag2 = False
 
     elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
         bot.send_message(message.chat.id, 'tie')
         # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+        # graphic.graph(state, graphics_mode)
+        # photo = open('my_plot.png', 'rb')
+        # bot.send_photo(message.chat.id, photo)
         flag2 = False
 
     if flag2:
         bot.send_message(message.chat.id, 'ход бота: ')
-        start_game_ai(difficult,symbol_person,symbol_ai)
+        start_game_ai(message,difficult,symbol_person,symbol_ai)
         # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВМЕСТО СЛЕД СТРОКИ И ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
-        bot.send_message(message.chat.id, f"{str(state)}")
+        graphic.graph(state, graphics_mode)
+        photo = open('my_plot.png', 'rb')
+        bot.send_photo(message.chat.id, photo)
         if algo.check_win(state, ai=symbol_ai):
             # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+            # graphic.graph(state, graphics_mode)
+            # photo = open('my_plot.png', 'rb')
+            # bot.send_photo(message.chat.id, photo)
             bot.send_message(message.chat.id, 'ai has won')
             flag2 = False
         elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
             bot.send_message(message.chat.id, 'tie')
             # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
+            # graphic.graph(state, graphics_mode)
+            # photo = open('my_plot.png', 'rb')
+            # bot.send_photo(message.chat.id, photo)
             flag2 = False
         # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
     if flag2:
         flag = True
 
 
-def start_game_ai(mode,symbol_person,symbol_ai):
+def start_game_ai(message,mode,symbol_person,symbol_ai):
     global matr
     state = matr[:]
     ij = algo2.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
     state[ij[0]][ij[1]] = symbol_ai
+
 
 def check_game_situation(state,symbol_person,symbol_ai):
     ...
