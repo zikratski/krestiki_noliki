@@ -9,13 +9,13 @@ def noliki(coord: tuple):
 
 def sewerus(coord: tuple):
     ax = plt.gca()
-    fn = r'C:\Users\Lera\Desktop\WEB\Table\Sew11.png'  # как сделать чтобы учитывалась png
+    fn = 'Sew11.png'  # как сделать чтобы учитывалась png
     im = plt.imread(fn) # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im,coord[0], coord[1]) # смещение изображения в пикселях
 
 def damboldor(coord:tuple):
     ax = plt.gca()
-    fn = r'C:\Users\Lera\Desktop\WEB\Table\Dam11.png'  # как сделать чтобы учитывалась png
+    fn = 'Dam11.png'  # как сделать чтобы учитывалась png
     im = plt.imread(fn)  # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im, coord[0], coord[1])  # смещение изображения в пикселях
 
@@ -56,7 +56,7 @@ def graph(input_array, graphics_mode = 'standart'):
                 elif elem == 2:
                     sewerus(res_coord_HP[i][j])
     # ax.set_facecolor('ivory')
-    if (input_array[0][0] == 1 and input_array[1][0] == 1 and input_array[2][0]== 1) or ((input_array[0][0] == 2 and input_array[1][0] == 2 and input_array[2][0]== 2)):
+    if (input_array[0][0] == 1 and input_array[1][0] == 1 and input_array[2][0]== 1) or (input_array[0][0] == 2 and input_array[1][0] == 2 and input_array[2][0]== 2):
         plt.plot([0.5, 0.5], [0, 3], 'salmon', linewidth=3)
     if (input_array[0][1] == 1 and input_array[1][1] ==1 and input_array[2][1] == 1) or (input_array[0][1] == 2 and input_array[1][1] ==2 and input_array[2][1] == 2):
         plt.plot([1.5, 1.5], [0, 3], 'salmon', linewidth=3)
@@ -72,11 +72,11 @@ def graph(input_array, graphics_mode = 'standart'):
     if (input_array[0][0] == 1 and input_array[1][1] == 1 and input_array[2][2] == 1) or (input_array[0][0] == 2 and input_array[1][1] == 2 and input_array[2][2] == 2):
         plt.plot([0, 3], [3, 0], 'salmon', linewidth=3)
     if (input_array[0][2] == 1 and input_array[1][1] == 1  and input_array[2][0] == 1) or (input_array[0][2] == 2 and input_array[1][1] == 2  and input_array[2][0] == 2):
-        plt.plot([3, 0], [0, 3], 'salmon', linewidth=3)
+        plt.plot([0, 3], [0, 3], 'salmon', linewidth=3)
     plt.savefig('my_plot.png', bbox_inches = 'tight',pad_inches = 0) # сохраняет картинку в той же директории, при повторном выполнении функцииб перезаписывается под тем же именеем
-    plt.show()
+    #plt.show()
 
 
 if __name__ == "__main__":
-    test = np.array([[0,1,0], [0,2,1], [0,0,2]])
+    test = np.array([[2,0,1], [0,2,0], [1,0,2]])
     graph(test)
