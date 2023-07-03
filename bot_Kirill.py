@@ -186,43 +186,61 @@ def choose_figure(message):
         symbol_person = 2
         symbol_ai = 1
         graphics_mode = "HP"
-        msg = bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
+        bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
     msg = bot.send_message(message.chat.id, 'Хорошей вам игры!', reply_markup=markup)
-    bot.register_next_step_handler(msg, show_and_replace_btn)
-
-def show_and_replace_btn(message):
-    global dict_commands
-    if (message.text == button for button in dict_commands.keys()):
-        btns[int(message.text) - 1] = types.KeyboardButton(" ")
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        markup.add(*btns)
-        msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
-        bot.register_next_step_handler(msg, show_and_replace_btn)
+    # bot.register_next_step_handler(msg, start_game)
+    start_game(message)
 
 
-    which_move = 'person'
-    matr = np.zeros_like(np.eye(int(field[0])))
-    while True:
+def start_game(message):
+    bot.send_message(message.chat.id, f"{mode}, {difficult}, {field}, {symbol_person}, {symbol_ai}, {graphics_mode}")
 
-        if algo.check_win(matr, ai=symbol_ai) or algo.check_lose(matr, pers=symbol_person) or algo.check_tie(matr, ai=symbol_ai, pers=symbol_person):
-            break
-        # print(state)
-        #graphic.graph(state)
 
-        if which_move == 'person':
-            # show_stats = int(input('Print 1 to show stats else 0: '))
-            # if show_stats:
-            #     algo2.get_stats(matr, 'person')
+# def show_and_replace_btn(message):
+#     global dict_commands
+#     if (message.text == button for button in dict_commands.keys()):
+#         btns[int(message.text) - 1] = types.KeyboardButton(" ")
+#         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+#         markup.add(*btns)
+#         msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
+#         bot.register_next_step_handler(msg, start_game)
 
-            command = ('1','2')
-            i = dict_commands[command[0]]
-            j = dict_commands[command[1]]
-            matr[i][j] = symbol_person
-            which_move = 'ai'
-        elif which_move == 'ai':
-            ij = algo2.best_move(matr, mode, pers=symbol_person, ai=symbol_ai)
-            matr[ij[0]][ij[1]] = symbol_ai
-            which_move = 'person'
+# def start_game(message):
+#     global dict_commands
+#
+#     which_move = 'person'
+#     matr = np.zeros_like(np.eye(int(field[0])))
+#
+#
+#     while True:
+#
+#         if algo.check_win(matr, ai=symbol_ai) or algo.check_lose(matr, pers=symbol_person) or algo.check_tie(matr, ai=symbol_ai, pers=symbol_person):
+#             break
+#         # print(state)
+#         #graphic.graph(state)
+#
+#         if which_move == 'person':
+#             # show_stats = int(input('Print 1 to show stats else 0: '))
+#             # if show_stats:
+#             #     algo2.get_stats(matr, 'person')
+#             if (message.text == button for button in dict_commands.keys()):
+#                 btns[int(message.text) - 1] = types.KeyboardButton(" ")
+#                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+#                 markup.add(*btns)
+#                 msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}',
+#                                        reply_markup=markup)
+#
+#             command = dict_commands[message.text]
+#             i = command[0]
+#             j = command[1]
+#             matr[i][j] = symbol_person
+#             bot.send_message(message.chat.id, f'ты походил:\n {str(matr)}')
+#             which_move = 'ai'
+#         elif which_move == 'ai':
+#             ij = algo2.best_move(matr, mode, pers=symbol_person, ai=symbol_ai)
+#             matr[ij[0]][ij[1]] = symbol_ai
+#             bot.send_message(message.chat.id, f'походил бот:\n {str(matr)}')
+#             which_move = 'person'
 
 
 if __name__ == "__main__":
