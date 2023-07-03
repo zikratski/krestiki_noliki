@@ -44,7 +44,7 @@ def choose_func(message):
         back = types.KeyboardButton("Вернуться в главное меню")
         markup.add(bot_mode, people_mode, back)
         msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
-        bot.register_next_step_handler(msg,choose_gamemode)
+        bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Авторы проекта" or message.text == "/authors"):
         bot.send_message(message.chat.id, text="Этот бот был создан Кириллом, Лерой, Антоном и Ильей ")
@@ -68,8 +68,13 @@ def choose_question(message):
         bot.register_next_step_handler(msg, choose_question)
 
     elif (message.text == "Вернуться в главное меню"):
-        msg = bot.send_message(message.chat.id, text="Вы вернулись в главное меню")
-        bot.register_next_step_handler(msg, start)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        btn1 = types.KeyboardButton("Начать игру")
+        btn2 = types.KeyboardButton("Задать вопрос")
+        btn3 = types.KeyboardButton("Авторы проекта")
+        markup.add(btn1, btn2, btn3)
+        msg = bot.send_message(message.chat.id, text="Возвращаю...", reply_markup=markup)
+        bot.register_next_step_handler(msg, choose_func)
 
 def choose_gamemode(message):
     global mode
@@ -92,6 +97,15 @@ def choose_gamemode(message):
         msg = bot.send_message(message.chat.id, "Вы будете играть <i>с другом</i>", parse_mode='HTML')
         bot.register_next_step_handler(msg, choose_field)
 
+    elif (message.text == "Вернуться в главное меню"):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        btn1 = types.KeyboardButton("Начать игру")
+        btn2 = types.KeyboardButton("Задать вопрос")
+        btn3 = types.KeyboardButton("Авторы проекта")
+        markup.add(btn1, btn2, btn3)
+        msg = bot.send_message(message.chat.id, text="Возвращаю...", reply_markup=markup)
+        bot.register_next_step_handler(msg, choose_func)
+
 def choose_difficulty(message):
 # Если выбрана кнопка Вернуться к выбору режима
     if (message.text == "Вернуться к выбору режима"):
@@ -104,7 +118,12 @@ def choose_difficulty(message):
         bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Вернуться в главное меню"):
-        msg = bot.send_message(message.chat.id, text="Вы вернулись в главное меню", reply_markup=markup)
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        btn1 = types.KeyboardButton("Начать игру")
+        btn2 = types.KeyboardButton("Задать вопрос")
+        btn3 = types.KeyboardButton("Авторы проекта")
+        markup.add(btn1, btn2, btn3)
+        msg = bot.send_message(message.chat.id, text="Возвращаю...")
         bot.register_next_step_handler(msg, start)
 
 # Если пользователь выбрал режим Лёгкий
@@ -131,6 +150,15 @@ def choose_difficulty(message):
         msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_difficulty)
 
+    elif (message.text == "Вернуться в главное меню"):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        btn1 = types.KeyboardButton("Начать игру")
+        btn2 = types.KeyboardButton("Задать вопрос")
+        btn3 = types.KeyboardButton("Авторы проекта")
+        markup.add(btn1, btn2, btn3)
+        msg = bot.send_message(message.chat.id, text="Возвращаю...")
+        bot.register_next_step_handler(msg, start)
+
 # Если пользователь выбрал 3x3
 def choose_field(message):
     if (message.text == "3x3"):
@@ -141,7 +169,9 @@ def choose_field(message):
         btn2 = types.KeyboardButton("Нолики")
         btn3 = types.KeyboardButton("Дамблдор")
         btn4 = types.KeyboardButton("Северус Снегг")
-        kb.add(btn1, btn2, btn3, btn4)
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        back = types.KeyboardButton("Вернуться к выбору поля")
+        kb.add(btn1, btn2, btn3, btn4, back_to_menu, back)
         msg = bot.send_message(message.chat.id, text="Выберите за кого хотите играть: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_figure)
 
