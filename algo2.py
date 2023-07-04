@@ -120,17 +120,18 @@ def minimax_lose(state, depth, isMaximazing,pers,ai):
                     best_score = min(score, best_score)
         return best_score
 
-def get_stats(state, move='ai',pers=2,ai=1):
+def get_stats(message,state, move='ai',pers=2,ai=1):
     chances = {'ai': 0, 'person': 0, 'tie': 0}
     get_all_possibles(state, chances, move=move,pers=pers,ai=ai)
     chances_sum = sum(chances.values())
     print(f'sum:{chances_sum}')
     for key, value in chances.items():
         chances[key] = round((100 / chances_sum) * value, 2)
-    print(f"chances in proc: \n"
+    bot.send_message(message.chat.id, f"chances in proc: \n"
           f"ai: {chances['ai']}%\n"
           f"person: {chances['person']}%\n"
           f"tie: {chances['tie']}%\n")
+
 
 def get_all_possibles(state, chances, move,pers,ai):
     win_ai = algo.check_win(state,ai)
