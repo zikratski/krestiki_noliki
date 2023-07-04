@@ -239,12 +239,19 @@ def choose_figure(message):
     if (message.text == "Крестики"):
         symbol_person = 1
         symbol_ai = 2
-        bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
+        if mode == 'c ботом':
+            bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
+        elif mode == 'c другом':
+            bot.send_message(message.chat.id, text="Person 1 - Крестики\nPerson 2 - Нолики")
+
 
     elif (message.text == "Нолики"):
         symbol_person = 2
         symbol_ai = 1
-        bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
+        if mode == 'c ботом':
+            bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
+        elif mode == 'c другом':
+            bot.send_message(message.chat.id, text="Person 1 - Нолики\nPerson 2 - Крестики")
 
     elif (message.text == "Дамблдор"):
         symbol_person = 1
