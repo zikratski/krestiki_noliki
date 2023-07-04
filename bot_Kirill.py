@@ -285,7 +285,7 @@ def who_moves_first(message):
     markup.add(*btns)
     btn1 = types.KeyboardButton("получить статистику")
     markup.add(btn1)
-    if (message.text) == "я":
+    if (message.text) == "я" or (message.text) == "получить статистику":
         msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
         bot.register_next_step_handler(msg, move_person)
     elif (message.text) == "бот":
@@ -316,32 +316,59 @@ def move_person(message):
     global graphics_mode
     global btns
     state = matr[:]
-
-    command = dict_commands[message.text]
-    i = int(command[0])
-    j = int(command[1])
-    state[i][j] = symbol_person
-    graphic.graph(state, graphics_mode)
-    photo = open('my_plot.png', 'rb')
-    bot.send_photo(message.chat.id, photo)
-
-    if algo.check_lose(state, pers=symbol_person):
+    if message.text == 'получить статистику':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'you have won',reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
-    elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
+        btn1 = types.KeyboardButton("моя победа")
+        btn2 = types.KeyboardButton("победа бота")
+        btn3 = types.KeyboardButton("ничья")
+        markup.add(btn1,btn2,btn3)
+        msg = bot.send_message(message.chat.id, 'чью статистику показывать', reply_markup=markup)
+        bot.register_next_step_handler(msg, stats_show)
     else:
-        bot.send_message(message.chat.id, 'ход бота: ')
-        start_game_ai(message,difficult,symbol_person,symbol_ai)
+        command = dict_commands[message.text]
+        i = int(command[0])
+        j = int(command[1])
+        state[i][j] = symbol_person
+        graphic.graph(state, graphics_mode)
+        photo = open('my_plot.png', 'rb')
+        bot.send_photo(message.chat.id, photo)
+
+        if algo.check_lose(state, pers=symbol_person):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'you have won',reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        else:
+            bot.send_message(message.chat.id, 'ход бота: ')
+            start_game_ai(message,difficult,symbol_person,symbol_ai)
+
+def stats_show(message):
+    global matr,symbol_person,symbol_ai
+    state = matr[:]
+    stats = algo2.get_stats(message,state,move='person',pers=symbol_person,ai=symbol_ai)
+    if message.text == 'моя победа':
+        bot.send_message(message.chat.id, f'шанс выиграть: {stats[1]}%')
+    elif message.text == 'победа бота':
+        bot.send_message(message.chat.id, f'шанс выиграть: {stats[0]}%')
+    elif message.text == 'ничья':
+        bot.send_message(message.chat.id, f'шанс ничьи: {stats[2]}%')
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    markup.add(*btns)
+    btn1 = types.KeyboardButton("получить статистику")
+    markup.add(btn1)
+
+    msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
+    bot.register_next_step_handler(msg, move_person)
 
 def start_game_ai(message,mode,symbol_person,symbol_ai):
     global matr
