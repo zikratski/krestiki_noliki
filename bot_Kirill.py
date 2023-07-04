@@ -229,11 +229,10 @@ def choose_figure(message):
     global btns
     global flag, flag3
     global matr
-    global btns
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-    markup.add(*btns)
-    btn1 = types.KeyboardButton("получить статистику")
-    markup.add(btn1 )
+    btn1 = types.KeyboardButton("бот")
+    btn2 = types.KeyboardButton("я")
+    markup.add(btn1,btn2)
     if (message.text == "Крестики"):
         symbol_person = 1
         symbol_ai = 2
@@ -255,10 +254,47 @@ def choose_figure(message):
         graphics_mode = "HP"
         bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
 
+
+    msg = bot.send_message(message.chat.id, 'Кто ходит первый?: ', reply_markup=markup)
+    bot.register_next_step_handler(msg, who_moves_first)
+
+def who_moves_first(message):
+    global btns
+    global symbol_person
+    global symbol_ai
+    global graphics_mode
+    global matr
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    markup.add(*btns)
+    btn1 = types.KeyboardButton("получить статистику")
+    markup.add(btn1)
+    if (message.text) == "я":
+        msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
+        bot.register_next_step_handler(msg, move_person)
+    elif (message.text) == "бот":
+        first_ai_move(message,mode,symbol_person,symbol_ai)
+
+
+
+
+
+def first_ai_move(message,mode,symbol_person,symbol_ai):
+    global matr
+    global graphics_mode
+    state = matr[:]
+    ij = (0,0)
+    state[ij[0]][ij[1]] = symbol_ai
+    graphic.graph(state, graphics_mode)
+    photo = open('my_plot.png', 'rb')
+    bot.send_photo(message.chat.id, photo)
+
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+    markup.add(*btns)
+    btn1 = types.KeyboardButton("получить статистику")
+    markup.add(btn1)
+
     msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
     bot.register_next_step_handler(msg, move_person)
-
-
 def move_person(message):
     global matr
     global symbol_ai, symbol_person
@@ -294,7 +330,6 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     ij = algo2.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
     state[ij[0]][ij[1]] = symbol_ai
     graphic.graph(state, graphics_mode)
-    # ЗАПУСК ЛЕРИНОЙ ФУНКЦИИ ВМЕСТО СЛЕД СТРОКИ И ВЫВОД В ЧАТ ТЕКУЩЕЙ СИТУАЦИИ
     photo = open('my_plot.png', 'rb')
     bot.send_photo(message.chat.id, photo)
 
