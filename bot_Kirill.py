@@ -66,6 +66,8 @@ def return_menu(message):
         btn2 = types.KeyboardButton("Задать вопрос")
         btn3 = types.KeyboardButton("Авторы проекта")
         markup.add(btn1, btn2, btn3)
+        msg = bot.send_message(message.chat.id, text=f"Вы вернулись в главное меню", reply_markup=markup)
+        bot.register_next_step_handler(msg, choose_func)
 
 def choose_question(message):
 
@@ -78,10 +80,7 @@ def choose_question(message):
         bot.register_next_step_handler(msg, choose_question)
 
     elif (message.text == "Вернуться в главное меню"):
-
-        msg = bot.send_message(message.chat.id, text="Возвращаю...")
-
-        bot.register_next_step_handler(msg, return_menu)
+        return_menu(message)
 
 def choose_gamemode(message):
     global mode
@@ -102,7 +101,16 @@ def choose_gamemode(message):
     elif message.text == "c другом(одно устройство)":
         mode = "c другом"
         msg = bot.send_message(message.chat.id, "Вы будете играть <i>с другом</i>", parse_mode='HTML')
+        kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        button1 = types.KeyboardButton("3x3")
+        button2 = types.KeyboardButton("Бесконечное(в разработке)")
+        back = types.KeyboardButton("Вернуться к выбору сложности")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        kb.add(button1, button2, back, back_to_menu)
         bot.register_next_step_handler(msg, choose_field)
+
+    elif message.text == "Вернуться в главное меню":
+        return_menu(message)
 
 def choose_difficulty(message):
     global difficult
@@ -117,7 +125,7 @@ def choose_difficulty(message):
         bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Вернуться в главное меню"):
-        bot.register_next_step_handler(message.chat.id, return_menu)
+        return_menu(message)
 
 # Если пользователь выбрал режим Лёгкий
     elif (message.text == "Лёгкий"):
@@ -168,6 +176,29 @@ def choose_field(message):
         kb.add(btn1, btn2, btn3, btn4)
         msg = bot.send_message(message.chat.id, text="Выберите за кого хотите играть: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_figure)
+
+    elif (message.text == "Бесконечное(в разработке)"):
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        button1 = types.KeyboardButton("3x3")
+        button2 = types.KeyboardButton("Бесконечное(в разработке)")
+        back = types.KeyboardButton("Вернуться к выбору сложности")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        keyboard.add(button1, button2, back, back_to_menu)
+        msg = bot.send_message(message.chat.id, text="Услуга стоит 2,49$ ", reply_markup=keyboard)
+        bot.register_next_step_handler(msg, choose_field)
+
+    elif (message.text == "Вернуться к выбору сложности"):
+        kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        b1 = types.KeyboardButton("Лёгкий")
+        b2 = types.KeyboardButton("Анриал(бот унижает)")
+        back = types.KeyboardButton("Вернуться к выбору режима")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        kb.add(b1, b2, back, back_to_menu)
+        msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
+        bot.register_next_step_handler(msg, choose_difficulty)
+
+    elif (message.text == "Вернуться в главное меню"):
+        return_menu(message)
 
 
 
