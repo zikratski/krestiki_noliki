@@ -17,6 +17,7 @@ dict_commands = {'1': (0, 0), '2': (0, 1), '3': (0, 2), '4': (1, 0), '5': (1, 1)
 matr = np.array(list())
 flag = True
 flag2 = True
+flag3 = True
 
 
 # Токена для телеграмма
@@ -93,9 +94,10 @@ def choose_gamemode(message):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         b1 = types.KeyboardButton("Лёгкий")
         b2 = types.KeyboardButton("Анриал(бот унижает)")
+        b3 = types.KeyboardButton("Рандом")
         back = types.KeyboardButton("Вернуться к выбору режима")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(b1, b2, back, back_to_menu)
+        kb.add(b1, b2, b3, back, back_to_menu)
         msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_difficulty)
 
@@ -142,14 +144,25 @@ def choose_difficulty(message):
         msg = bot.send_message(message.chat.id, text="Выберите размер игрового поля: ", reply_markup=keyboard)
         bot.register_next_step_handler(msg, choose_field)
 
+    elif (message.text == "Рандом"):
+        difficult = "random"
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        button1 = types.KeyboardButton("3x3")
+        button2 = types.KeyboardButton("Бесконечное(в разработке)")
+        back = types.KeyboardButton("Вернуться к выбору сложности")
+        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
+        keyboard.add(button1, button2, back, back_to_menu)
+        msg = bot.send_message(message.chat.id, text="Выберите размер игрового поля: ", reply_markup=keyboard)
+        bot.register_next_step_handler(msg, choose_field)
 
     elif (message.text == "Вернуться к выбору сложности"):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         b1 = types.KeyboardButton("Лёгкий")
         b2 = types.KeyboardButton("Анриал(бот унижает)")
+        b3 = types.KeyboardButton("Рандом")
         back = types.KeyboardButton("Вернуться к выбору режима")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(b1, b2, back, back_to_menu)
+        kb.add(b1, b2,b3, back, back_to_menu)
         msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_difficulty)
 
@@ -177,12 +190,15 @@ def choose_figure(message):
     global symbol_ai
     global graphics_mode
     global btns
-    global flag
+    global flag, flag3
+    global matr
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
     btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
             types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
             types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
     markup.add(*btns)
+    btn1 = types.KeyboardButton("получить статистику")
+    markup.add(btn1 )
     if (message.text == "Крестики"):
         symbol_person = 1
         symbol_ai = 2
@@ -208,7 +224,11 @@ def choose_figure(message):
         if flag == True:
             msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
             flag = False
-            bot.register_next_step_handler(msg, start_game_person)
+            if message.text == "получить статистику":
+                mess = algo2.get_stats(state=matr,move='person',pers=symbol_person,ai=symbol_ai)
+                bot.send_message(message.chat.id, f"{mess}")
+            else:
+                bot.register_next_step_handler(msg, start_game_person)
 
     #ЗДЕСЬ ДОЛЖЕН БЫТЬ ВЫХОД В МЕНЮ
 
