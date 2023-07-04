@@ -58,25 +58,25 @@ def graph(input_array, graphics_mode = 'standart'):
     # ax.set_facecolor('ivory')
     if (input_array[0][0] == 1 and input_array[1][0] == 1 and input_array[2][0]== 1) or ((input_array[0][0] == 2 and input_array[1][0] == 2 and input_array[2][0]== 2)):
         plt.plot([0.5, 0.5], [0, 3], 'salmon', linewidth=3)
-    if (input_array[0][1] == 1 and input_array[1][1] ==1 and input_array[2][1] == 1) or (input_array[0][1] == 2 and input_array[1][1] ==2 and input_array[2][1] == 2):
+    elif (input_array[0][1] == 1 and input_array[1][1] ==1 and input_array[2][1] == 1) or (input_array[0][1] == 2 and input_array[1][1] ==2 and input_array[2][1] == 2):
         plt.plot([1.5, 1.5], [0, 3], 'salmon', linewidth=3)
-    if (input_array[0][2] == 1 and input_array[1][2] == 1 and input_array[2][2]==1) or (input_array[0][2] == 2 and input_array[1][2] == 2 and input_array[2][2]==2):
+    elif (input_array[0][2] == 1 and input_array[1][2] == 1 and input_array[2][2]==1) or (input_array[0][2] == 2 and input_array[1][2] == 2 and input_array[2][2]==2):
         plt.plot([2.5, 2.5], [0, 3], 'salmon', linewidth=3)
-    if (input_array[0][0] == 1 and input_array[0][1] == 1 and input_array[0][2] == 1) or (input_array[0][0] == 2 and input_array[0][1] == 2 and input_array[0][2] == 2):
+    elif (input_array[0][0] == 1 and input_array[0][1] == 1 and input_array[0][2] == 1) or (input_array[0][0] == 2 and input_array[0][1] == 2 and input_array[0][2] == 2):
         plt.plot([0, 3], [2.5, 2.5], 'salmon', linewidth=3)
-    if (input_array[1][0] == 1 and input_array[1][1] == 1 and input_array[1][2] ==1 ) or (input_array[1][0] == 2 and input_array[1][1] == 2 and input_array[1][2] == 2):
+    elif (input_array[1][0] == 1 and input_array[1][1] == 1 and input_array[1][2] ==1 ) or (input_array[1][0] == 2 and input_array[1][1] == 2 and input_array[1][2] == 2):
         plt.plot([0, 3], [1.5, 1.5], 'salmon', linewidth=3)
-    if (input_array[2][0] == 1 and input_array[2][1] == 1 and input_array[2][2]== 1) or (input_array[2][0] == 2 and input_array[2][1] == 2 and input_array[2][2]== 2):
+    elif (input_array[2][0] == 1 and input_array[2][1] == 1 and input_array[2][2]== 1) or (input_array[2][0] == 2 and input_array[2][1] == 2 and input_array[2][2]== 2):
         plt.plot([0, 3], [0.5, 0.5], 'salmon', linewidth=3)
 
-    if (input_array[0][0] == 1 and input_array[1][1] == 1 and input_array[2][2] == 1) or (input_array[0][0] == 2 and input_array[1][1] == 2 and input_array[2][2] == 2):
+    elif (input_array[0][0] == 1 and input_array[1][1] == 1 and input_array[2][2] == 1) or (input_array[0][0] == 2 and input_array[1][1] == 2 and input_array[2][2] == 2):
         plt.plot([0, 3], [3, 0], 'salmon', linewidth=3)
-    if (input_array[0][2] == 1 and input_array[1][1] == 1  and input_array[2][0] == 1) or (input_array[0][2] == 2 and input_array[1][1] == 2  and input_array[2][0] == 2):
-        plt.plot([3, 0], [0, 3], 'salmon', linewidth=3)
+    elif (input_array[0][2] == 1 and input_array[1][1] == 1  and input_array[2][0] == 1) or (input_array[0][2] == 2 and input_array[1][1] == 2  and input_array[2][0] == 2):
+        plt.plot([0, 3], [0, 3], 'salmon', linewidth=3)
     plt.savefig('my_plot.png', bbox_inches = 'tight',pad_inches = 0) # сохраняет картинку в той же директории, при повторном выполнении функцииб перезаписывается под тем же именеем
     plt.show()
 
 
 if __name__ == "__main__":
-    test = np.array([[0,1,0], [0,2,1], [0,0,2]])
+    test = np.array([[2,2,1], [0,1,2], [1,2,1]])
     graph(test)
