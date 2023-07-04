@@ -63,7 +63,7 @@ def choose_func(message):
         msg = bot.send_message(message.chat.id, text="Задай мне вопрос", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_question)
 
-def return_menu(message):
+def ret_menu(message):
     if (message.text == "Вернуться в главное меню"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("Начать игру")
@@ -84,7 +84,7 @@ def choose_question(message):
         bot.register_next_step_handler(msg, choose_question)
 
     elif (message.text == "Вернуться в главное меню"):
-        return_menu(message)
+        ret_menu(message)
 
 def choose_gamemode(message):
     global mode
@@ -114,7 +114,7 @@ def choose_gamemode(message):
         bot.register_next_step_handler(msg, choose_field)
 
     elif message.text == "Вернуться в главное меню":
-        return_menu(message)
+        ret_menu(message)
 
 def choose_difficulty(message):
     global difficult
@@ -129,7 +129,7 @@ def choose_difficulty(message):
         bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Вернуться в главное меню"):
-        return_menu(message)
+        ret_menu(message)
 
 # Если пользователь выбрал режим Лёгкий
     elif (message.text == "Лёгкий"):
@@ -214,14 +214,14 @@ def choose_field(message):
         bot.register_next_step_handler(msg, choose_difficulty)
 
     elif (message.text == "Вернуться в главное меню"):
-        return_menu(message)
+        ret_menu(message)
 
 
 
 # Выбор фигуры, за которую будет играть пользователь и ИИ
 def choose_figure(message):
     if (message.text == "Вернуться в главное меню"):
-        return_menu(message)
+        ret_menu(message)
 
     global symbol_person
     global symbol_ai
@@ -313,13 +313,22 @@ def move_person(message):
     bot.send_photo(message.chat.id, photo)
 
     if algo.check_lose(state, pers=symbol_person):
-        msg = bot.send_message(message.chat.id, 'you have won')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        btn1 = types.KeyboardButton("Вернуться в главное меню")
+        markup.add(btn1)
+        msg = bot.send_message(message.chat.id, 'you have won',reply_markup=markup)
+        bot.register_next_step_handler(msg, ret_menu_call)
 
     elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
-        bot.send_message(message.chat.id, 'tie')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        btn1 = types.KeyboardButton("Вернуться в главное меню")
+        markup.add(btn1)
+        msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+        bot.register_next_step_handler(msg, ret_menu_call)
 
-    bot.send_message(message.chat.id, 'ход бота: ')
-    start_game_ai(message,difficult,symbol_person,symbol_ai)
+    else:
+        bot.send_message(message.chat.id, 'ход бота: ')
+        start_game_ai(message,difficult,symbol_person,symbol_ai)
 
 
 
@@ -338,10 +347,28 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     btn1 = types.KeyboardButton("получить статистику")
     markup.add(btn1)
 
-    msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
-    bot.register_next_step_handler(msg, move_person)
+    if algo.check_win(state, ai=symbol_ai):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        btn1 = types.KeyboardButton("Вернуться в главное меню")
+        markup.add(btn1)
+        msg = bot.send_message(message.chat.id, 'ai has won', reply_markup=markup)
+        bot.register_next_step_handler(msg, ret_menu_call)
 
 
+    elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        btn1 = types.KeyboardButton("Вернуться в главное меню")
+        markup.add(btn1)
+        msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+        bot.register_next_step_handler(msg, ret_menu_call)
+    else:
+        msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
+        bot.register_next_step_handler(msg, move_person)
+
+
+def ret_menu_call(message):
+    if (message.text == 'Вернуться в главное меню'):
+        ret_menu(message)
 
 
 def check_game_situation(state,symbol_person,symbol_ai):
