@@ -129,22 +129,17 @@ def chat_helper(message):
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     button1 = types.KeyboardButton("Играю")
     kb.add(button1)
-    if id1:
-        msg = bot.send_message(message.chat.id, text="нажмите на 2 чтобы сыграть вторым игроком : ", reply_markup=kb)
-        bot.register_next_step_handler(msg, register_users)
-    else:
-        msg = bot.send_message(message.chat.id, text="нажмите Играю чтобы сыграть первым игроком : ", reply_markup=kb)
-        bot.register_next_step_handler(msg, register_users)
+    msg = bot.send_message(message.chat.id, text="нажмите на Играю чтобы стать игроком : ", reply_markup=kb)
+    bot.register_next_step_handler(msg, register_users)
 def register_users(message):
     global id1,id2
-    if message.text == '1':
-        id1 = message.from_user.username
-        bot.send_message(message.chat.id, f"hello, {id1}")
-
-    elif message.text == '2':
-        id2 = message.from_user.username
-        bot.send_message(message.chat.id, f"hello, {id2}")
-
+    if message.text == 'Играю':
+        if id1 and not id2:
+            id2 = message.from_user.username
+            bot.send_message(message.chat.id, f"hello, {id2}")
+        else:
+            id1 = message.from_user.username
+            bot.send_message(message.chat.id, f"hello, {id1}")
     if all((id1,id2)):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
