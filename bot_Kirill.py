@@ -337,20 +337,23 @@ def move_person(message):
         if algo.check_lose(state, pers=symbol_person):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'you have won',reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
         elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
         else:
             bot.send_message(message.chat.id, 'ход бота: ')
             start_game_ai(message,difficult,symbol_person,symbol_ai)
+
 
 def stats_show(message):
     global matr,symbol_person,symbol_ai
@@ -396,7 +399,8 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     if algo.check_win(state, ai=symbol_ai):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
         btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
+        back = types.KeyboardButton("Сыграть еще раз")
+        markup.add(btn1, back)
         msg = bot.send_message(message.chat.id, 'ai has won', reply_markup=markup)
         bot.register_next_step_handler(msg, ret_menu_call)
 
@@ -404,7 +408,8 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
         btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
+        back = types.KeyboardButton("Сыграть еще раз")
+        markup.add(btn1, back)
         msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
         bot.register_next_step_handler(msg, ret_menu_call)
     else:
@@ -415,6 +420,28 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
 def ret_menu_call(message):
     if (message.text == 'Вернуться в главное меню'):
         ret_menu(message)
+    elif (message.text == 'Сыграть еще раз'):
+        global symbol_person
+        global symbol_ai
+        global graphics_mode
+        global btns
+        global matr
+        global mode
+        matr = np.zeros_like(np.eye(3))
+        if mode == 'c ботом':
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("бот")
+            btn2 = types.KeyboardButton("я")
+            markup.add(btn1, btn2)
+            msg = bot.send_message(message.chat.id, 'Кто ходит первый?: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, who_moves_first)
+        elif mode == 'c другом':
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            markup.add(*btns)
+            btn1 = types.KeyboardButton("получить статистику")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, move_person_1)
 
 
 def show_and_replace_btn(message):
@@ -461,14 +488,16 @@ def move_person_1(message):
         if algo.check_lose(state, pers=symbol_person):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'person 1 has won', reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
         elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
@@ -510,14 +539,16 @@ def move_person_2(message):
         if algo.check_win(state, ai=symbol_ai):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'person 2 has won', reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
         elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("Вернуться в главное меню")
-            markup.add(btn1)
+            back = types.KeyboardButton("Сыграть еще раз")
+            markup.add(btn1, back)
             msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
             bot.register_next_step_handler(msg, ret_menu_call)
 
@@ -529,6 +560,5 @@ if __name__ == "__main__":
     # бесконечная работа бота
 
     bot.infinity_polling()
-
 
 
