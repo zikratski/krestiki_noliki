@@ -124,7 +124,7 @@ def get_stats(message,state, move='ai',pers=2,ai=1):
     chances = {'ai': 0, 'person': 0, 'tie': 0}
     get_all_possibles(state, chances, move=move,pers=pers,ai=ai)
     chances_sum = sum(chances.values())
-    print(f'sum:{chances_sum}')
+    #print(f'sum:{chances_sum}')
     for key, value in chances.items():
         chances[key] = round((100 / chances_sum) * value, 2)
     return list(chances.values())
