@@ -129,26 +129,25 @@ def chat_helper(message):
     kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     button1 = types.KeyboardButton("Играю")
     kb.add(button1)
-    msg = bot.send_message(message.chat.id, text="нажмите на Играю чтобы стать игроком : ", reply_markup=kb)
+    msg = bot.send_message(message.chat.id, text="нажмите на <i>Играю</i> чтобы стать игроком : ", reply_markup=kb)
     bot.register_next_step_handler(msg, register_users)
 def register_users(message):
     global id1,id2
     if message.text == 'Играю':
         if id1 and not id2:
             id2 = message.from_user.username
-            bot.send_message(message.chat.id, f"hello, {id2}")
-        else:
+            bot.send_message(message.chat.id, f"Привет, @{id2}!")
+        elif not id1 and not id2:
             id1 = message.from_user.username
-            bot.send_message(message.chat.id, f"hello, {id1}")
+            bot.send_message(message.chat.id, f"Привет, @{id1}!")
 
 
     if all((id1,id2)):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
         button2 = types.KeyboardButton("Бесконечное(в разработке)")
-        back = types.KeyboardButton("Вернуться к выбору сложности")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(button1, button2, back, back_to_menu)
+        kb.add(button1, button2, back_to_menu)
         msg = bot.send_message(message.chat.id, text="Выберите размер поля : ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_field)
     else:
@@ -240,9 +239,11 @@ def choose_field(message):
             keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
             button1 = types.KeyboardButton("3x3")
             button2 = types.KeyboardButton("Бесконечное(в разработке)")
-            back = types.KeyboardButton("Вернуться к выбору сложности")
             back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-            keyboard.add(button1, button2, back, back_to_menu)
+            keyboard.add(button1, button2, back_to_menu)
+            if mode == 'с ботом':
+                back = types.KeyboardButton("Вернуться к выбору сложности")
+                keyboard.add(back)
             msg = bot.send_message(message.chat.id, text="Услуга стоит 2,49$ ", reply_markup=keyboard)
             bot.register_next_step_handler(msg, choose_field)
 
@@ -257,13 +258,12 @@ def choose_field(message):
             msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
             bot.register_next_step_handler(msg, choose_difficulty)
     else:
-        bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ!!! ")
+        bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
         button2 = types.KeyboardButton("Бесконечное(в разработке)")
-        back = types.KeyboardButton("Вернуться к выбору сложности")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(button1, button2, back, back_to_menu)
+        kb.add(button1, button2, back_to_menu)
         msg = bot.send_message(message.chat.id, text="Выберите размер поля : ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_field)
 
@@ -275,7 +275,7 @@ def choose_figure(message):
     if message.from_user.username == id1 or message.from_user.username == id2 or mode != 'c чатом':
         if (message.text == "Вернуться в главное меню"):
             ret_menu(message)
-
+        mess_id = message.from_user.username
         global symbol_person
         global symbol_ai
         global graphics_mode
@@ -297,7 +297,7 @@ def choose_figure(message):
             elif mode == 'c другом':
                 bot.send_message(message.chat.id, text="Person 1 - Крестики\nPerson 2 - Нолики")
             elif mode == "c чатом":
-                pass
+                bot.send_message(message.chat.id, f"@{mess_id} - Крестики\n@{id2 if mess_id == id1 else id1} - Нолики")
 
 
 
@@ -310,7 +310,7 @@ def choose_figure(message):
             elif mode == 'c другом':
                 bot.send_message(message.chat.id, text="Person 1 - Нолики\nPerson 2 - Крестики")
             elif mode == "c чатом":
-                bot.send_message(message.chat.id, f"Person 1 - Нолики\nPerson 2 - Крестики")
+                bot.send_message(message.chat.id, f"@{mess_id} - Нолики\n@{id2 if mess_id == id1 else id1} - Крестики")
 
         elif (message.text == "Дамблдор"):
             symbol_person = 1
@@ -321,7 +321,8 @@ def choose_figure(message):
             elif mode == "с другом":
                 bot.send_message(message.chat.id, text="Person 1 - Дамблдор\nPerson 2 - Северус Снегг")
             elif mode == "c чатом":
-                pass
+                bot.send_message(message.chat.id, f"@{mess_id} - Дамблдори\n@{id2 if mess_id == id1 else id1} - Северус Снегг")
+
         elif (message.text == "Северус Снегг"):
             symbol_person = 2
             symbol_ai = 1
@@ -331,7 +332,9 @@ def choose_figure(message):
             elif mode == "с другом":
                 bot.send_message(message.chat.id, text="Person 1 - Северус Снегг\nPerson 2 - Дамблдор")
             elif mode == "c чатом":
-                pass
+                bot.send_message(message.chat.id,
+                                 f"@{mess_id} - Северус Снегг\n@{id2 if mess_id == id1 else id1} - Дамблдор")
+
 
         elif (message.text == "ManUnt"):
             symbol_person = 1
@@ -342,7 +345,8 @@ def choose_figure(message):
             elif mode == "с другом":
                 bot.send_message(message.chat.id, text="Person 1 - Лучший клуб в истории футбола\nPerson 2 - МанСити")
             elif mode == "c чатом":
-                pass
+                bot.send_message(message.chat.id,
+                                 f"@{mess_id} - Лучший клуб в истории футбола\n@{id2 if mess_id == id1 else id1} - МанСити")
 
         elif (message.text == "ManCity"):
             symbol_person = 2
@@ -353,7 +357,8 @@ def choose_figure(message):
             elif mode == "с другом":
                 bot.send_message(message.chat.id, text="Person 1 - МанСити\nPerson 2 - Лучший клуб в истории футбола")
             elif mode == "c чатом":
-                pass
+                bot.send_message(message.chat.id,
+                                 f"@{mess_id} - МанСити\n@{id2 if mess_id == id1 else id1} - Лучший клуб в истории футбола")
 
 
         if mode == 'c ботом':
@@ -368,13 +373,12 @@ def choose_figure(message):
             bot.register_next_step_handler(msg, move_person_1)
         elif mode == "c чатом":
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-            markup.add(*btns)
-            btn1 = types.KeyboardButton("получить статистику")
+            btn1 = types.KeyboardButton("я первый")
             markup.add(btn1)
-            msg = bot.send_message(message.chat.id, f'Ходит {id1}: ', reply_markup=markup)
-            bot.register_next_step_handler(msg, move_person_1)
+            msg = bot.send_message(message.chat.id, f'Нажми <i>я первый</i>, чтобы походить первым: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, who_moves_first_chat)
     else:
-        bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ!!! ")
+        bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         btn1 = types.KeyboardButton("Крестики")
         btn2 = types.KeyboardButton("Нолики")
@@ -385,7 +389,35 @@ def choose_figure(message):
         kb.add(btn1, btn2, btn3, btn4, btn5, btn6)
         msg = bot.send_message(message.chat.id, text="Выберите за кого хотите играть: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_figure)
-
+def who_moves_first_chat(message):
+    global id1,id2, mode
+    global btns
+    global symbol_person
+    global symbol_ai
+    global graphics_mode
+    global matr
+    if message.text == "я первый":
+        if message.from_user.username == id1:
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            markup.add(*btns)
+            btn1 = types.KeyboardButton("получить статистику")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, f'Ходит: @{id1}', reply_markup=markup)
+            bot.register_next_step_handler(msg, move_person_1)
+        elif message.from_user.username == id2:
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            markup.add(*btns)
+            btn1 = types.KeyboardButton("получить статистику")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, f'Ходит: @{id2}', reply_markup=markup)
+            bot.register_next_step_handler(msg, move_person_2)
+        else:
+            bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("я первый")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, f'Нажми <i>я первый</i>, чтобы походить первым: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, who_moves_first_chat)
 def who_moves_first(message):
     global btns
     global symbol_person
@@ -483,11 +515,12 @@ def move_person(message):
 def stats_show(message):
     global matr,symbol_person,symbol_ai
     global move_choose
+    global mode, id1,id2
     state = matr[:]
     stats = algo2.get_stats(message,state, move='person' if move_choose == 'you' or move_choose == 'person 1' else 'ai',pers=symbol_person,ai=symbol_ai)
-    if message.text == 'моя победа' or message.text == 'победа person 1':
+    if message.text == 'моя победа' or message.text == 'победа person 1' or message.text == f"победа {id1}" :
         bot.send_message(message.chat.id, f'шанс выиграть: {stats[1]}%')
-    elif message.text == 'победа бота' or message.text == 'победа person 2':
+    elif message.text == 'победа бота' or message.text == 'победа person 2'or message.text == f"победа {id2}" :
         bot.send_message(message.chat.id, f'шанс выиграть: {stats[0]}%')
     elif message.text == 'ничья':
         bot.send_message(message.chat.id, f'шанс ничьи: {stats[2]}%')
@@ -500,10 +533,10 @@ def stats_show(message):
         msg = bot.send_message(message.chat.id, 'Ваш ход: ',reply_markup=markup)
         bot.register_next_step_handler(msg, move_person)
     elif move_choose == 'person 1':
-        msg = bot.send_message(message.chat.id, 'Ходит человек 1: ',reply_markup=markup)
+        msg = bot.send_message(message.chat.id, 'Ходит человек 1: 'if mode != 'c чатом' else f"Ходит @{id1}",reply_markup=markup)
         bot.register_next_step_handler(msg, move_person_1)
     elif move_choose == 'person 2':
-        msg = bot.send_message(message.chat.id, 'Ходит человек 2: ',reply_markup=markup)
+        msg = bot.send_message(message.chat.id, 'Ходит человек 2: 'if mode != 'c чатом' else f"Ходит @{id2}",reply_markup=markup)
         bot.register_next_step_handler(msg, move_person_2)
 
 def start_game_ai(message,mode,symbol_person,symbol_ai):
@@ -542,7 +575,6 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
         msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
         bot.register_next_step_handler(msg, move_person)
 
-
 def ret_menu_call(message):
     global id1, id2,mode
     if message.from_user.username == id1 or message.from_user.username == id2 or mode != "c чатом":
@@ -577,15 +609,12 @@ def ret_menu_call(message):
                 msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
                 bot.register_next_step_handler(msg, move_person_1)
             elif mode == "c чатом":
-                btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
-                        types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
-                        types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-                markup.add(*btns)
-                btn1 = types.KeyboardButton("получить статистику")
+                btn1 = types.KeyboardButton("я первый")
                 markup.add(btn1)
-                msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
-                bot.register_next_step_handler(msg, move_person_1)
+                msg = bot.send_message(message.chat.id, f'Нажми <i>я первый</i>, чтобы походить первым: ',
+                                       reply_markup=markup)
+                bot.register_next_step_handler(msg, who_moves_first_chat)
 
 def move_person_1(message):
     global id1, id2
@@ -596,13 +625,14 @@ def move_person_1(message):
     global graphics_mode
     global btns
     global move_choose
+    global mode
     if message.from_user.username == id1 or mode!="c чатом":
         move_choose = 'person 1'
         state = matr[:]
         if message.text == 'получить статистику':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-            btn1 = types.KeyboardButton("победа person 1")
-            btn2 = types.KeyboardButton("победа person 2")
+            btn1 = types.KeyboardButton("победа person 1" if mode != 'c чатом' else f"победа {id1}")
+            btn2 = types.KeyboardButton("победа person 2" if mode != 'c чатом' else f"победа {id2}")
             btn3 = types.KeyboardButton("ничья")
             markup.add(btn1,btn2,btn3)
             msg = bot.send_message(message.chat.id, 'чью статистику показывать', reply_markup=markup)
@@ -617,7 +647,7 @@ def move_person_1(message):
                 markup.add(*btns)
                 btn1 = types.KeyboardButton("получить статистику")
                 markup.add(btn1)
-                msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
+                msg = bot.send_message(message.chat.id, 'Ходит человек 1: 'if mode != 'c чатом' else f"Ходит @{id1}", reply_markup=markup)
                 bot.register_next_step_handler(msg, move_person_1)
             else:
                 state[i][j] = symbol_person
@@ -636,7 +666,7 @@ def move_person_1(message):
                     btn1 = types.KeyboardButton("Вернуться в главное меню")
                     back = types.KeyboardButton("Сыграть еще раз")
                     markup.add(btn1, back)
-                    msg = bot.send_message(message.chat.id, 'person 1 has won', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, 'person 1 has won' if mode != 'c чатом' else f"победил @{id1}", reply_markup=markup)
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
@@ -644,11 +674,11 @@ def move_person_1(message):
                     btn1 = types.KeyboardButton("Вернуться в главное меню")
                     back = types.KeyboardButton("Сыграть еще раз")
                     markup.add(btn1, back)
-                    msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, 'ничья', reply_markup=markup)
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 else:
-                    msg = bot.send_message(message.chat.id, 'Ходит человек 2: ', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, f"Ходит @{id2}", reply_markup=markup)
                     bot.register_next_step_handler(msg, move_person_2)
     else:
         if message.from_user.username == id2:
@@ -659,7 +689,7 @@ def move_person_1(message):
         markup.add(*btns)
         btn1 = types.KeyboardButton("получить статистику")
         markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
+        msg = bot.send_message(message.chat.id, f"Ходит @{id1}", reply_markup=markup)
         bot.register_next_step_handler(msg, move_person_1)
 
 def move_person_2(message):
@@ -671,13 +701,14 @@ def move_person_2(message):
     global graphics_mode
     global btns
     global move_choose
+    global mode
     if message.from_user.username == id2 or mode != "c чатом":
         move_choose = 'person 2'
         state = matr[:]
         if message.text == 'получить статистику':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-            btn1 = types.KeyboardButton("победа person 1")
-            btn2 = types.KeyboardButton("победа person 2")
+            btn1 = types.KeyboardButton("победа person 1" if mode != 'c чатом' else f"победа {id1}")
+            btn2 = types.KeyboardButton("победа person 2" if mode != 'c чатом' else f"победа {id2}")
             btn3 = types.KeyboardButton("ничья")
             markup.add(btn1,btn2,btn3)
             msg = bot.send_message(message.chat.id, 'чью статистику показывать', reply_markup=markup)
@@ -692,7 +723,7 @@ def move_person_2(message):
                 markup.add(*btns)
                 btn1 = types.KeyboardButton("получить статистику")
                 markup.add(btn1)
-                msg = bot.send_message(message.chat.id, 'Ходит человек 2: ', reply_markup=markup)
+                msg = bot.send_message(message.chat.id, 'Ходит человек 2: ' if mode != 'c чатом' else f"Ходит  @{id2}", reply_markup=markup)
                 bot.register_next_step_handler(msg, move_person_2)
             else:
                 state[i][j] = symbol_ai
@@ -711,7 +742,7 @@ def move_person_2(message):
                     btn1 = types.KeyboardButton("Вернуться в главное меню")
                     back = types.KeyboardButton("Сыграть еще раз")
                     markup.add(btn1, back)
-                    msg = bot.send_message(message.chat.id, 'person 2 has won', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, 'person 2 has won' if mode != 'c чатом' else f"победил @{id2}", reply_markup=markup)
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
@@ -723,7 +754,7 @@ def move_person_2(message):
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 else:
-                    msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id,  f"Ходит @{id1}", reply_markup=markup)
                     bot.register_next_step_handler(msg, move_person_1)
     else:
         if message.from_user.username == id1:
@@ -734,7 +765,7 @@ def move_person_2(message):
         markup.add(*btns)
         btn1 = types.KeyboardButton("получить статистику")
         markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'Ходит человек 2: ', reply_markup=markup)
+        msg = bot.send_message(message.chat.id, f"Ходит @{id2}", reply_markup=markup)
         bot.register_next_step_handler(msg, move_person_2)
 
 def clear_buttons(btn):
