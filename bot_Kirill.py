@@ -110,7 +110,7 @@ def choose_gamemode(message):
         back = types.KeyboardButton("Вернуться к выбору сложности")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
         kb.add(button1, button2, back, back_to_menu)
-        msg = bot.send_message(message.chat.id, text="Выберите размер ботаe : ", reply_markup=kb)
+        msg = bot.send_message(message.chat.id, text="Выберите размер поля : ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_field)
 
     elif message.text == "Вернуться в главное меню":
@@ -190,7 +190,9 @@ def choose_field(message):
         btn2 = types.KeyboardButton("Нолики")
         btn3 = types.KeyboardButton("Дамблдор")
         btn4 = types.KeyboardButton("Северус Снегг")
-        kb.add(btn1, btn2, btn3, btn4)
+        btn5 = types.KeyboardButton("ManUnt")
+        btn6 = types.KeyboardButton("ManCity")
+        kb.add(btn1, btn2, btn3, btn4, btn5, btn6)
         msg = bot.send_message(message.chat.id, text="Выберите за кого хотите играть: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_figure)
 
@@ -256,12 +258,37 @@ def choose_figure(message):
         symbol_person = 1
         symbol_ai = 2
         graphics_mode = "HP"
-        bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
-    elif (message.text) == "Северус Снегг":
+        if mode == "с ботом":
+            bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
+        elif mode == "с другом":
+            bot.send_message(message.chat.id, text="Person 1 - Дамблдор\nPerson 2 - Северус Снегг")
+    elif (message.text == "Северус Снегг"):
         symbol_person = 2
         symbol_ai = 1
         graphics_mode = "HP"
-        bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
+        if mode == "с ботом":
+            bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
+        elif mode == "с другом":
+            bot.send_message(message.chat.id, text="Person 1 - Северус Снегг\nPerson 2 - Дамблдор")
+
+    elif (message.text == "ManUnt"):
+        symbol_person = 1
+        symbol_ai = 2
+        graphics_mode = "football"
+        if mode == "с ботом":
+            bot.send_message(message.chat.id, text="Вы - Лучший клуб в истории футбола\nБот - МанСити")
+        elif mode == "с другом":
+            bot.send_message(message.chat.id, text="Person 1 - Лучший клуб в истории футбола\nPerson 2 - МанСити")
+
+    elif (message.text == "ManCity"):
+        symbol_person = 2
+        symbol_ai = 1
+        graphics_mode = "football"
+        if mode == "с ботом":
+            bot.send_message(message.chat.id, text="Вы - МанСити\nБот - Лучший клуб в истории футбола")
+        elif mode == "с другом":
+            bot.send_message(message.chat.id, text="Person 1 - МанСити\nPerson 2 - Лучший клуб в истории футбола")
+
 
     if mode == 'c ботом':
         msg = bot.send_message(message.chat.id, 'Кто ходит первый?: ', reply_markup=markup)
@@ -296,6 +323,8 @@ def first_ai_move(message,mode,symbol_person,symbol_ai):
     state = matr[:]
     ij = (0,0)
     state[ij[0]][ij[1]] = symbol_ai
+
+    clear_buttons('1')
     graphic.graph(state, graphics_mode)
     photo = open('my_plot.png', 'rb')
     bot.send_photo(message.chat.id, photo)
@@ -307,6 +336,7 @@ def first_ai_move(message,mode,symbol_person,symbol_ai):
 
     msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
     bot.register_next_step_handler(msg, move_person)
+
 def move_person(message):
     global matr
     global symbol_ai, symbol_person
@@ -330,6 +360,8 @@ def move_person(message):
         i = int(command[0])
         j = int(command[1])
         state[i][j] = symbol_person
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        clear_buttons(message.text)
         graphic.graph(state, graphics_mode)
         photo = open('my_plot.png', 'rb')
         bot.send_photo(message.chat.id, photo)
@@ -351,7 +383,7 @@ def move_person(message):
             bot.register_next_step_handler(msg, ret_menu_call)
 
         else:
-            bot.send_message(message.chat.id, 'ход бота: ')
+            bot.send_message(message.chat.id, 'ход бота: ', reply_markup=markup)
             start_game_ai(message,difficult,symbol_person,symbol_ai)
 
 
@@ -387,6 +419,7 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     state = matr[:]
     ij = algo2.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
     state[ij[0]][ij[1]] = symbol_ai
+    clear_buttons(str([key for key in dict_commands if dict_commands[key] == ij][0]))
     graphic.graph(state, graphics_mode)
     photo = open('my_plot.png', 'rb')
     bot.send_photo(message.chat.id, photo)
@@ -434,6 +467,9 @@ def ret_menu_call(message):
             btn2 = types.KeyboardButton("я")
             markup.add(btn1, btn2)
             msg = bot.send_message(message.chat.id, 'Кто ходит первый?: ', reply_markup=markup)
+            btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+                    types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+                    types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
             bot.register_next_step_handler(msg, who_moves_first)
         elif mode == 'c другом':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -441,17 +477,10 @@ def ret_menu_call(message):
             btn1 = types.KeyboardButton("получить статистику")
             markup.add(btn1)
             msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
+            btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+                    types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+                    types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
             bot.register_next_step_handler(msg, move_person_1)
-
-
-def show_and_replace_btn(message):
-    global dict_commands
-    if (message.text == button for button in dict_commands.keys()):
-        btns[int(message.text) - 1] = types.KeyboardButton(" ")
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        markup.add(*btns)
-        msg = bot.send_message(message.chat.id, f'Вы походили на клетку номер {message.text}', reply_markup=markup)
-        #bot.register_next_step_handler(msg, start_gam
 
 def move_person_1(message):
     global matr
@@ -476,6 +505,7 @@ def move_person_1(message):
         i = int(command[0])
         j = int(command[1])
         state[i][j] = symbol_person
+        clear_buttons(message.text)
         graphic.graph(state, graphics_mode)
         photo = open('my_plot.png', 'rb')
         bot.send_photo(message.chat.id, photo)
@@ -502,8 +532,9 @@ def move_person_1(message):
             bot.register_next_step_handler(msg, ret_menu_call)
 
         else:
-            msg = bot.send_message(message.chat.id, 'Ходит человек 2: ')
+            msg = bot.send_message(message.chat.id, 'Ходит человек 2: ', reply_markup=markup)
             bot.register_next_step_handler(msg, move_person_2)
+
 def move_person_2(message):
     global matr
     global symbol_ai, symbol_person
@@ -527,6 +558,7 @@ def move_person_2(message):
         i = int(command[0])
         j = int(command[1])
         state[i][j] = symbol_ai
+        clear_buttons(message.text)
         graphic.graph(state, graphics_mode)
         photo = open('my_plot.png', 'rb')
         bot.send_photo(message.chat.id, photo)
@@ -553,8 +585,17 @@ def move_person_2(message):
             bot.register_next_step_handler(msg, ret_menu_call)
 
         else:
-            msg = bot.send_message(message.chat.id, 'Ходит человек 1: ')
+            msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
             bot.register_next_step_handler(msg, move_person_1)
+
+def clear_buttons(btn):
+    global dict_commands
+    global deleted_buttons
+    if (btn == button for button in dict_commands.keys()):
+        deleted_buttons += btn
+        btns[int(btn) - 1] = types.KeyboardButton(" ")
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(*btns)
 
 if __name__ == "__main__":
     # бесконечная работа бота
