@@ -505,7 +505,7 @@ def move_person(message):
                 btn1 = types.KeyboardButton("Вернуться в главное меню")
                 back = types.KeyboardButton("Сыграть еще раз")
                 markup.add(btn1, back)
-                msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+                msg = bot.send_message(message.chat.id, 'ничья', reply_markup=markup)
                 bot.register_next_step_handler(msg, ret_menu_call)
 
             else:
@@ -678,7 +678,7 @@ def move_person_1(message):
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 else:
-                    msg = bot.send_message(message.chat.id, f"Ходит @{id2}", reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, f"Ходит @{id2}" if mode == 'c чатом' else 'Ходит person 2', reply_markup=markup)
                     bot.register_next_step_handler(msg, move_person_2)
     else:
         if message.from_user.username == id2:
@@ -750,11 +750,11 @@ def move_person_2(message):
                     btn1 = types.KeyboardButton("Вернуться в главное меню")
                     back = types.KeyboardButton("Сыграть еще раз")
                     markup.add(btn1, back)
-                    msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+                    msg = bot.send_message(message.chat.id, 'ничья', reply_markup=markup)
                     bot.register_next_step_handler(msg, ret_menu_call)
 
                 else:
-                    msg = bot.send_message(message.chat.id,  f"Ходит @{id1}", reply_markup=markup)
+                    msg = bot.send_message(message.chat.id,  f"Ходит @{id1}" if mode == 'c чатом' else 'Ходит person 1', reply_markup=markup)
                     bot.register_next_step_handler(msg, move_person_1)
     else:
         if message.from_user.username == id1:
