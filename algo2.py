@@ -127,10 +127,11 @@ def get_stats(message,state, move='ai',pers=2,ai=1):
     print(f'sum:{chances_sum}')
     for key, value in chances.items():
         chances[key] = round((100 / chances_sum) * value, 2)
-    bot.send_message(message.chat.id, f"chances in proc: \n"
-          f"ai: {chances['ai']}%\n"
-          f"person: {chances['person']}%\n"
-          f"tie: {chances['tie']}%\n")
+    return list(chances.values())
+    # return (f"chances in proc: \n"
+    #       f"ai: {chances['ai']}%\n"
+    #       f"person: {chances['person']}%\n"
+    #       f"tie: {chances['tie']}%\n")
 
 
 def get_all_possibles(state, chances, move,pers,ai):
