@@ -141,6 +141,7 @@ def register_users(message):
             id1 = message.from_user.username
             bot.send_message(message.chat.id, f"hello, {id1}")
 
+
     if all((id1,id2)):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button1 = types.KeyboardButton("3x3")
