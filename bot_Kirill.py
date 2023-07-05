@@ -94,9 +94,10 @@ def choose_gamemode(message):
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         b1 = types.KeyboardButton("Лёгкий")
         b2 = types.KeyboardButton("Анриал(бот унижает)")
+        b3 = types.KeyboardButton("Рандом")
         back = types.KeyboardButton("Вернуться к выбору режима")
         back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(b1, b2, back, back_to_menu)
+        kb.add(b1, b2,b3, back, back_to_menu)
         msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_difficulty)
 
@@ -355,7 +356,7 @@ def stats_show(message):
     global matr,symbol_person,symbol_ai
     global move_choose
     state = matr[:]
-    stats = algo2.get_stats(message,state,move='person' if move_choose == 'person' or move_choose == 'person 1'else 'ai',pers=symbol_person,ai=symbol_ai)
+    stats = algo2.get_stats(message,state, move='person' if move_choose == 'you' or move_choose == 'person 1' else 'ai',pers=symbol_person,ai=symbol_ai)
     if message.text == 'моя победа' or message.text == 'победа person 1':
         bot.send_message(message.chat.id, f'шанс выиграть: {stats[1]}%')
     elif message.text == 'победа бота' or message.text == 'победа person 2':
