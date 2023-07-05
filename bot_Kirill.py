@@ -231,6 +231,9 @@ def choose_figure(message):
     global symbol_ai
     global graphics_mode
     global btns
+    btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+            types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+            types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
     global matr
     global mode
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -240,6 +243,7 @@ def choose_figure(message):
     if (message.text == "Крестики"):
         symbol_person = 1
         symbol_ai = 2
+        graphics_mode = 'standart'
         if mode == 'c ботом':
             bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
         elif mode == 'c другом':
@@ -249,6 +253,7 @@ def choose_figure(message):
     elif (message.text == "Нолики"):
         symbol_person = 2
         symbol_ai = 1
+        graphics_mode = 'standart'
         if mode == 'c ботом':
             bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
         elif mode == 'c другом':
@@ -471,24 +476,25 @@ def ret_menu_call(message):
         global mode
         matr = np.zeros_like(np.eye(3))
         if mode == 'c ботом':
+            btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+                    types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+                    types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             btn1 = types.KeyboardButton("бот")
             btn2 = types.KeyboardButton("я")
             markup.add(btn1, btn2)
             msg = bot.send_message(message.chat.id, 'Кто ходит первый?: ', reply_markup=markup)
+
+            bot.register_next_step_handler(msg, who_moves_first)
+        elif mode == 'c другом':
             btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
                     types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
                     types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
-            bot.register_next_step_handler(msg, who_moves_first)
-        elif mode == 'c другом':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
             markup.add(*btns)
             btn1 = types.KeyboardButton("получить статистику")
             markup.add(btn1)
             msg = bot.send_message(message.chat.id, 'Ходит человек 1: ', reply_markup=markup)
-            btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
-                    types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
-                    types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
             bot.register_next_step_handler(msg, move_person_1)
 
 def move_person_1(message):
