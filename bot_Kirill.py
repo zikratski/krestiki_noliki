@@ -18,9 +18,7 @@ btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButt
             types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
             types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
 matr = np.array(list())
-flag = True
-flag2 = True
-flag3 = True
+move_choose = None
 
 
 # Токена для телеграмма
@@ -285,7 +283,7 @@ def who_moves_first(message):
     markup.add(*btns)
     btn1 = types.KeyboardButton("получить статистику")
     markup.add(btn1)
-    if (message.text) == "я" or (message.text) == "получить статистику":
+    if (message.text) == "я":
         msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
         bot.register_next_step_handler(msg, move_person)
     elif (message.text) == "бот":
@@ -315,7 +313,9 @@ def move_person(message):
     global difficult
     global graphics_mode
     global btns
+    global move_choose
     state = matr[:]
+    move_choose = 'you'
     if message.text == 'получить статистику':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
         btn1 = types.KeyboardButton("моя победа")
@@ -353,11 +353,12 @@ def move_person(message):
 
 def stats_show(message):
     global matr,symbol_person,symbol_ai
+    global move_choose
     state = matr[:]
-    stats = algo2.get_stats(message,state,move='person',pers=symbol_person,ai=symbol_ai)
-    if message.text == 'моя победа':
+    stats = algo2.get_stats(message,state,move='person' if move_choose == 'person' or move_choose == 'person 1'else 'ai',pers=symbol_person,ai=symbol_ai)
+    if message.text == 'моя победа' or message.text == 'победа person 1':
         bot.send_message(message.chat.id, f'шанс выиграть: {stats[1]}%')
-    elif message.text == 'победа бота':
+    elif message.text == 'победа бота' or message.text == 'победа person 2':
         bot.send_message(message.chat.id, f'шанс выиграть: {stats[0]}%')
     elif message.text == 'ничья':
         bot.send_message(message.chat.id, f'шанс ничьи: {stats[2]}%')
@@ -366,9 +367,15 @@ def stats_show(message):
     markup.add(*btns)
     btn1 = types.KeyboardButton("получить статистику")
     markup.add(btn1)
-
-    msg = bot.send_message(message.chat.id, 'Ваш ход: ', reply_markup=markup)
-    bot.register_next_step_handler(msg, move_person)
+    if move_choose == 'you':
+        msg = bot.send_message(message.chat.id, 'Ваш ход: ',reply_markup=markup)
+        bot.register_next_step_handler(msg, move_person)
+    elif move_choose == 'person 1':
+        msg = bot.send_message(message.chat.id, 'Ходит человек 1: ',reply_markup=markup)
+        bot.register_next_step_handler(msg, move_person_1)
+    elif move_choose == 'person 2':
+        msg = bot.send_message(message.chat.id, 'Ходит человек 2: ',reply_markup=markup)
+        bot.register_next_step_handler(msg, move_person_2)
 
 def start_game_ai(message,mode,symbol_person,symbol_ai):
     global matr
@@ -425,38 +432,48 @@ def move_person_1(message):
     global difficult
     global graphics_mode
     global btns
+    global move_choose
+    move_choose = 'person 1'
     state = matr[:]
-
-    command = dict_commands[message.text]
-    i = int(command[0])
-    j = int(command[1])
-    state[i][j] = symbol_person
-    graphic.graph(state, graphics_mode)
-    photo = open('my_plot.png', 'rb')
-    bot.send_photo(message.chat.id, photo)
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-    markup.add(*btns)
-    btn1 = types.KeyboardButton("получить статистику")
-    markup.add(btn1)
-
-    if algo.check_lose(state, pers=symbol_person):
+    if message.text == 'получить статистику':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'person 1 has won', reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
-    elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
+        btn1 = types.KeyboardButton("победа person 1")
+        btn2 = types.KeyboardButton("победа person 2")
+        btn3 = types.KeyboardButton("ничья")
+        markup.add(btn1,btn2,btn3)
+        msg = bot.send_message(message.chat.id, 'чью статистику показывать', reply_markup=markup)
+        bot.register_next_step_handler(msg, stats_show)
     else:
-        msg = bot.send_message(message.chat.id, 'Ходит человек 2: ')
-        bot.register_next_step_handler(msg, move_person_2)
+        command = dict_commands[message.text]
+        i = int(command[0])
+        j = int(command[1])
+        state[i][j] = symbol_person
+        graphic.graph(state, graphics_mode)
+        photo = open('my_plot.png', 'rb')
+        bot.send_photo(message.chat.id, photo)
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        markup.add(*btns)
+        btn1 = types.KeyboardButton("получить статистику")
+        markup.add(btn1)
+
+        if algo.check_lose(state, pers=symbol_person):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'person 1 has won', reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        else:
+            msg = bot.send_message(message.chat.id, 'Ходит человек 2: ')
+            bot.register_next_step_handler(msg, move_person_2)
 def move_person_2(message):
     global matr
     global symbol_ai, symbol_person
@@ -464,38 +481,48 @@ def move_person_2(message):
     global difficult
     global graphics_mode
     global btns
+    global move_choose
+    move_choose = 'person 2'
     state = matr[:]
-
-    command = dict_commands[message.text]
-    i = int(command[0])
-    j = int(command[1])
-    state[i][j] = symbol_ai
-    graphic.graph(state, graphics_mode)
-    photo = open('my_plot.png', 'rb')
-    bot.send_photo(message.chat.id, photo)
-
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-    markup.add(*btns)
-    btn1 = types.KeyboardButton("получить статистику")
-    markup.add(btn1)
-
-    if algo.check_win(state, ai=symbol_ai):
+    if message.text == 'получить статистику':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'person 2 has won', reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
-    elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
-        btn1 = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(btn1)
-        msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
-        bot.register_next_step_handler(msg, ret_menu_call)
-
+        btn1 = types.KeyboardButton("победа person 1")
+        btn2 = types.KeyboardButton("победа person 2")
+        btn3 = types.KeyboardButton("ничья")
+        markup.add(btn1,btn2,btn3)
+        msg = bot.send_message(message.chat.id, 'чью статистику показывать', reply_markup=markup)
+        bot.register_next_step_handler(msg, stats_show)
     else:
-        msg = bot.send_message(message.chat.id, 'Ходит человек 1: ')
-        bot.register_next_step_handler(msg, move_person_1)
+        command = dict_commands[message.text]
+        i = int(command[0])
+        j = int(command[1])
+        state[i][j] = symbol_ai
+        graphic.graph(state, graphics_mode)
+        photo = open('my_plot.png', 'rb')
+        bot.send_photo(message.chat.id, photo)
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+        markup.add(*btns)
+        btn1 = types.KeyboardButton("получить статистику")
+        markup.add(btn1)
+
+        if algo.check_win(state, ai=symbol_ai):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'person 2 has won', reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        elif algo.check_tie(state, ai=symbol_ai, pers=symbol_person):
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
+            btn1 = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(btn1)
+            msg = bot.send_message(message.chat.id, 'tie', reply_markup=markup)
+            bot.register_next_step_handler(msg, ret_menu_call)
+
+        else:
+            msg = bot.send_message(message.chat.id, 'Ходит человек 1: ')
+            bot.register_next_step_handler(msg, move_person_1)
 
 if __name__ == "__main__":
     # бесконечная работа бота
