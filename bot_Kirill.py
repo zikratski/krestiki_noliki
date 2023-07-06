@@ -43,13 +43,19 @@ def choose_func(message):
     if (message.text == "Начать игру"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         #Выбор режима игры и сохранение в переменную mode
-        bot_mode = types.KeyboardButton("c ботом")
-        people_mode = types.KeyboardButton("c другом(одно устройство)")
-        chat_mode = types.KeyboardButton("c другом(разные устройства)")
-        back = types.KeyboardButton("Вернуться в главное меню")
-        markup.add(bot_mode, people_mode, chat_mode, back)
-        msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
-        bot.register_next_step_handler(msg, choose_gamemode)
+        if message.chat.type == "private":
+            bot_mode = types.KeyboardButton("c ботом")
+            people_mode = types.KeyboardButton("c другом(одно устройство)")
+            back = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(bot_mode, people_mode, back)
+            msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, choose_gamemode)
+        else:
+            chat_mode = types.KeyboardButton("c другом(разные устройства)")
+            back = types.KeyboardButton("Вернуться в главное меню")
+            markup.add(chat_mode, back)
+            msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
+            bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Авторы проекта" or message.text == "/authors"):
         bot.send_message(message.chat.id, text="Этот бот был создан Кириллом, Лерой, Антоном и Ильей ")
@@ -782,5 +788,3 @@ if __name__ == "__main__":
     # бесконечная работа бота
 
     bot.infinity_polling()
-
-
