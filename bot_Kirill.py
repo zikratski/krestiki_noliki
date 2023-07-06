@@ -48,13 +48,13 @@ def choose_func(message):
             people_mode = types.KeyboardButton("c другом(одно устройство)")
             back = types.KeyboardButton("Вернуться в главное меню")
             markup.add(bot_mode, people_mode, back)
-            msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
+            msg = bot.send_message(message.chat.id, text='Выберите режим игры\n\n<i>Чтобы играть с другом по сети, добавьте бота в общий чат: </i>', reply_markup=markup,parse_mode='HTML')
             bot.register_next_step_handler(msg, choose_gamemode)
         else:
             chat_mode = types.KeyboardButton("c другом(разные устройства)")
             back = types.KeyboardButton("Вернуться в главное меню")
             markup.add(chat_mode, back)
-            msg = bot.send_message(message.chat.id, text='Выберите режим игры: ', reply_markup=markup)
+            msg = bot.send_message(message.chat.id, text='Выберите режим игры:\n\n<i>Чтобы играть с ботом или с другом на одном устройстве, запустилте бота https://t.me/XsAndOsBot в лс: </i>', reply_markup=markup,parse_mode='HTML')
             bot.register_next_step_handler(msg, choose_gamemode)
 
     elif (message.text == "Авторы проекта" or message.text == "/authors"):
@@ -69,6 +69,7 @@ def choose_func(message):
         msg = bot.send_message(message.chat.id, text="Задай мне вопрос", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_question)
 
+
 def ret_menu(message):
     if (message.text == "Вернуться в главное меню"):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -76,7 +77,7 @@ def ret_menu(message):
         btn2 = types.KeyboardButton("Задать вопрос")
         btn3 = types.KeyboardButton("Авторы проекта")
         markup.add(btn1, btn2, btn3)
-        msg = bot.send_message(message.chat.id, text=f"Вы вернулись в главное меню", reply_markup=markup)
+        msg = bot.send_message(message.chat.id, text=f"Вы вернулись в главное меню1111", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_func)
 
 def choose_question(message):
@@ -88,9 +89,10 @@ def choose_question(message):
     elif message.text == "Что я могу?":
         msg = bot.send_message(message.chat.id, text="Я почти готов играть с тобой 🚀")
         bot.register_next_step_handler(msg, choose_question)
-
     elif (message.text == "Вернуться в главное меню"):
         ret_menu(message)
+
+
 
 def choose_gamemode(message):
     global mode
@@ -266,15 +268,6 @@ def choose_field(message):
 
         elif (message.text == "Вернуться в главное меню"):
             ret_menu(message)
-    else:
-        bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
-        kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        button1 = types.KeyboardButton("3x3")
-        button2 = types.KeyboardButton("Бесконечное(в разработке)")
-        back_to_menu = types.KeyboardButton("Вернуться в главное меню")
-        kb.add(button1, button2, back_to_menu)
-        msg = bot.send_message(message.chat.id, text="Выберите размер поля : ", reply_markup=kb)
-        bot.register_next_step_handler(msg, choose_field)
 
 
 
@@ -401,6 +394,9 @@ def choose_figure(message):
 def who_moves_first_chat(message):
     global id1,id2, mode
     global btns
+    btns = [types.KeyboardButton("1"), types.KeyboardButton("2"), types.KeyboardButton("3"),
+                        types.KeyboardButton("4"), types.KeyboardButton("5"), types.KeyboardButton("6"),
+                        types.KeyboardButton("7"), types.KeyboardButton("8"), types.KeyboardButton("9")]
     global symbol_person
     global symbol_ai
     global graphics_mode
@@ -585,7 +581,7 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
         bot.register_next_step_handler(msg, move_person)
 
 def ret_menu_call(message):
-    global id1, id2,mode
+    global id1, id2, mode
     if message.from_user.username == id1 or message.from_user.username == id2 or mode != "c чатом":
         if (message.text == 'Вернуться в главное меню'):
             ret_menu(message)
@@ -688,6 +684,7 @@ def move_person_1(message):
 
                 else:
                     msg = bot.send_message(message.chat.id, f"Ходит @{id2}" if mode == 'c чатом' else 'Ходит person 2', reply_markup=markup)
+                    bot.send_message(message.chat.id,f"mode: {mode}")
                     bot.register_next_step_handler(msg, move_person_2)
     else:
         if message.from_user.username == id2:
@@ -764,6 +761,7 @@ def move_person_2(message):
 
                 else:
                     msg = bot.send_message(message.chat.id,  f"Ходит @{id1}" if mode == 'c чатом' else 'Ходит person 1', reply_markup=markup)
+                    bot.send_message(message.chat.id, f"mode: {mode}")
                     bot.register_next_step_handler(msg, move_person_1)
     else:
         if message.from_user.username == id1:
