@@ -4,7 +4,7 @@ import telebot
 import graphic
 import algo, algo2
 from telebot import types
-
+# Остальная игровая логика
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
 # Первоначальное значение None, т.к. пользователь ничего не выбрал
 mode = None
