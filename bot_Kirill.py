@@ -72,7 +72,7 @@ def choose_func(message):
         markup.add(btn1, btn2, back)
         msg = bot.send_message(message.chat.id, text="Задай мне вопрос", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_question)
-    elif (message.text != "Начать игру") and (message.text != "Авторы проекта" and message.text != "/authors") and (message.text != "Задать вопрос" and  message.text != "/question"):
+    elif (message.text != "Начать игру") and (message.text != "Авторы проекта" and message.text != "/authors") and (message.text != "Задать вопрос" and  message.text != "/question") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
         msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
         bot.register_next_step_handler(msg, choose_func)
 
@@ -89,6 +89,8 @@ def ret_menu(message):
         markup.add(btn1, btn2, btn3)
         msg = bot.send_message(message.chat.id, text=f"Вы вернулись в главное меню", reply_markup=markup)
         bot.register_next_step_handler(msg, choose_func)
+    elif (message.text != "/start") and (message.text != "Вы вернулись в главное меню") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+        pass
 
 def choose_question(message):
     if (message.text == "/start"):
@@ -105,7 +107,7 @@ def choose_question(message):
     elif (message.text == "Вернуться в главное меню"):
         ret_menu(message)
 
-    elif ((message.text != "Как меня зовут?") or (message.text != "Что я могу?") or (message.text != "Вернуться в главное меню")) and (message.text != "/start"):
+    elif ((message.text != "Как меня зовут?") or (message.text != "Что я могу?") or (message.text != "Вернуться в главное меню")) and (message.text != "/start") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
         msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
         bot.register_next_step_handler(msg, choose_question)
 
@@ -151,7 +153,7 @@ def choose_gamemode(message):
     elif message.text == "Вернуться в главное меню":
         ret_menu(message)
 
-    elif (message.text != "c ботом" and message.text != "c другом(одно устройство)" and message.text != "c другом(разные устройства)" and message.text != "Вернуться в главное меню") and (message.text !="/start") :
+    elif (message.text != "c ботом" and message.text != "c другом(одно устройство)" and message.text != "c другом(разные устройства)" and message.text != "Вернуться в главное меню") and (message.text !="/start") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся") :
         msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
         bot.register_next_step_handler(msg, choose_gamemode)
     # Доступен выбор возврата к предыдущему выбору и к выходу в главное меню
@@ -257,7 +259,7 @@ def choose_difficulty(message):
         msg = bot.send_message(message.chat.id, text="Выберите сложность бота: ", reply_markup=kb)
         bot.register_next_step_handler(msg, choose_difficulty)
 
-    elif ((message.text != "Вернуться в главное меню") or (message.text != "Вернуться к выбору режима") or (message.text != "Лёгкий") or (message.text != "Анриал(бот унижает)") or (message.text != "Рандом") or (message.text != "Вернуться к выбору сложности")) and (message.text != "/start"):
+    elif ((message.text != "Вернуться в главное меню") or (message.text != "Вернуться к выбору режима") or (message.text != "Лёгкий") or (message.text != "Анриал(бот унижает)") or (message.text != "Рандом") or (message.text != "Вернуться к выбору сложности")) and (message.text != "/start") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
         msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
         bot.register_next_step_handler(msg, choose_difficulty)
 
@@ -310,9 +312,13 @@ def choose_field(message):
         elif (message.text == "Вернуться в главное меню"):
             ret_menu(message)
 
-        elif (message.text != "3x3") and (message.text != "Бесконечное(в разработке)") and (message.text != "Вернуться к выбору сложности") and (message.text != "Вернуться в главное меню"):
-            msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-            bot.register_next_step_handler(msg, choose_field)
+        elif (message.text != "3x3") and (message.text != "Бесконечное(в разработке)") and (message.text != "Вернуться к выбору сложности") and (message.text != "Вернуться в главное меню") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+            if mode == "c чатом":
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, choose_field)
+            else:
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, choose_field)
     else:
         bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         kb = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -421,9 +427,15 @@ def choose_figure(message):
                                  f"@{mess_id} - МанСити\n@{id2 if mess_id == id1 else id1} - Лучший клуб в истории футбола")
             choose_mode(message)
 
-        elif ((message.text != "Вернуться в главное меню") or (message.text != "Крестики") or (message.text != "Нолики") or (message.text != "Дамблдор") or (message.text != "Северус Снегг") or (message.text != "ManUnt") or (message.text != "ManCity")) and (message.text != "/start"):
-            msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-            bot.register_next_step_handler(msg, choose_figure)
+        elif ((message.text != "Вернуться в главное меню") or (message.text != "Крестики") or (message.text != "Нолики") or (message.text != "Дамблдор") or (message.text != "Северус Снегг") or (message.text != "ManUnt") or (message.text != "ManCity")) and (message.text != "/start") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+            if mode == "c чатом":
+                #bot.send_message(message.chat.id, text="i am here")
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, choose_figure)
+                #choose_figure(message)
+            else:
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, choose_figure)
 
     else:
         bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
@@ -494,9 +506,15 @@ def who_moves_first_chat(message):
                 markup.add(btn1)
                 msg = bot.send_message(message.chat.id, f'Нажми <i>я первый</i>, чтобы походить первым: ', reply_markup=markup, parse_mode='HTML')
                 bot.register_next_step_handler(msg, who_moves_first_chat)
-        elif message.text != 'я первый' and (message.text != "/start"):
-            msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-            bot.register_next_step_handler(msg, who_moves_first_chat)
+        elif message.text != 'я первый' and (message.text != "/start") and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+            if mode == "c чатом":
+                #bot.send_message(message.chat.id, text="i am here")
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, who_moves_first_chat)
+                #who_moves_first_chat(message)
+            else:
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, who_moves_first_chat)
     else:
         bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -525,6 +543,10 @@ def who_moves_first(message):
         bot.register_next_step_handler(msg, move_person)
     elif (message.text) == "бот":
         first_ai_move(message,mode,symbol_person,symbol_ai)
+    elif (message.text != "/start") and (message.text != "я") and (message.text) != "бот":
+        msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+        bot.register_next_step_handler(msg, who_moves_first)
+
 
 def first_ai_move(message,mode,symbol_person,symbol_ai):
     global matr
@@ -635,9 +657,15 @@ def stats_show(message):
             stats_show_helper(message)
 
 
-        elif (message.text != 'моя победа' and message.text != 'победа игрока 1' and message.text != f"победа {id1}" and message.text != 'победа бота' and message.text != 'победа игрока 2'and message.text != f"победа {id2}" and message.text != 'ничья') and message.text != '/start':
-            msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-            bot.register_next_step_handler(msg, stats_show)
+        elif (message.text != 'моя победа' and message.text != 'победа игрока 1' and message.text != f"победа {id1}" and message.text != 'победа бота' and message.text != 'победа игрока 2'and message.text != f"победа {id2}" and message.text != 'ничья') and message.text != '/start' and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+            if mode == "c чатом":
+                #bot.send_message(message.chat.id, text="i am here")
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, stats_show)
+                #stats_show(message)
+            else:
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, stats_show)
     else:
         bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -745,9 +773,15 @@ def ret_menu_call(message):
                 msg = bot.send_message(message.chat.id, f'Нажми <i>я первый</i>, чтобы походить первым: ',
                                        reply_markup=markup,parse_mode='HTML')
                 bot.register_next_step_handler(msg, who_moves_first_chat)
-        elif (message.text != 'Вернуться в главное меню') and (message.text != 'Сыграть еще раз') and (message.text != '"/start"'):
-            msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-            bot.register_next_step_handler(msg, ret_menu_call)
+        elif (message.text != 'Вернуться в главное меню') and (message.text != 'Сыграть еще раз') and (message.text != '"/start"') and (message.text != "Я не знаю данной команды!\nВыберите из имеющихся"):
+            if mode == "c чатом":
+                #bot.send_message(message.chat.id, text="i am here")
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, ret_menu_call)
+                #ret_menu_call(message)
+            else:
+                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                bot.register_next_step_handler(msg, ret_menu_call)
     else:
         bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ МЕШАЙ ИГРАТЬ, КЛОУН!!! ")
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -828,8 +862,14 @@ def move_person_1(message):
                         #bot.send_message(message.chat.id,f"mode: {mode}")
                         bot.register_next_step_handler(msg, move_person_2)
             except KeyError:
-                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-                bot.register_next_step_handler(msg, move_person_1)
+                if mode == "c чатом":
+                    #bot.send_message(message.chat.id, text="i am here")
+                    msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                    bot.register_next_step_handler(msg, move_person_1)
+                    #move_person_1(message)
+                else:
+                    msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                    bot.register_next_step_handler(msg, move_person_1)
     else:
         if message.from_user.username == id2:
             bot.send_message(message.chat.id, f"@{message.from_user.username} НЕ ТВОЙ ХОД, КЛОУН!!! ")
@@ -912,8 +952,13 @@ def move_person_2(message):
                         #bot.send_message(message.chat.id, f"mode: {mode}")
                         bot.register_next_step_handler(msg, move_person_1)
             except KeyError:
-                msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
-                bot.register_next_step_handler(msg, move_person_2)
+                if mode == "c чатом":
+                    msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                    bot.register_next_step_handler(msg, move_person_2)
+                    #move_person_2(message)
+                else:
+                    msg = bot.send_message(message.chat.id, text="Я не знаю данной команды!\nВыберите из имеющихся")
+                    bot.register_next_step_handler(msg, move_person_2)
 
     else:
         if message.from_user.username == id1:
