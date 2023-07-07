@@ -166,7 +166,7 @@ def get_all_possibles(state, chances, move,pers,ai):
         return
 
 if __name__ == '__main__':
-    matr = np.array([[1,0,0],[2,0,1],[1,0,2]])
+    matr = np.array([[1, 0, 0], [2, 0, 1], [1, 0, 2]])
     #
     # # matr_ex = np.array([[2,1,2],[2,1,0],[1,0,0]])
     # # bestmove = best_move(matr_ex)
