@@ -1,9 +1,11 @@
 import numpy as np
 import telebot
+from telebot import types
 import os
+
 import graphic
 import algo
-from telebot import types
+
 # Остальная игровая логика
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
 
