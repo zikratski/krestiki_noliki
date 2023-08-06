@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
+import os
 def krestiki(coord:tuple):
     plt.plot(coord[0], coord[1], "gx", markersize = 65, markeredgewidth = 4)
 
@@ -9,26 +9,26 @@ def noliki(coord: tuple):
 
 def sewerus(coord: tuple):
     ax = plt.gca()
-    fn = 'Sew11.png'  # как сделать чтобы учитывалась png
+    fn = 'images/Sew11.png' # как сделать чтобы учитывалась png
     im = plt.imread(fn) # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im,coord[0], coord[1]) # смещение изображения в пикселях
 
 def damboldor(coord:tuple):
     ax = plt.gca()
-    fn = 'Dam11.png'  # как сделать чтобы учитывалась png
+    fn = 'images/Dam11.png'  # как сделать чтобы учитывалась png
     im = plt.imread(fn)  # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im, coord[0], coord[1])  # смещение изображения в пикселях
 
 
 def united(coord:float):
     ax = plt.gca()
-    fn = 'united1.png'  # как сделать чтобы учитывалась png
+    fn = 'images/united1.png'  # как сделать чтобы учитывалась png
     im = plt.imread(fn)  # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im, coord[0], coord[1])  # смещение изображения в пикселях
 
 def city(coord:tuple):
     ax = plt.gca()
-    fn = 'city1.png'  # как сделать чтобы учитывалась png
+    fn = 'images/city1.png'  # как сделать чтобы учитывалась png
     im = plt.imread(fn)  # считывает изображениуе в файле, можно использовать url
     ax.figure.figimage(im, coord[0], coord[1])  # смещение изображения в пикселях
 
@@ -95,8 +95,11 @@ def graph(input_array, graphics_mode = 'standart'):
         plt.plot([0, 3], [3, 0], 'salmon', linewidth=3)
     elif (input_array[0][2] == 1 and input_array[1][1] == 1  and input_array[2][0] == 1) or (input_array[0][2] == 2 and input_array[1][1] == 2  and input_array[2][0] == 2):
         plt.plot([0, 3], [0, 3], 'salmon', linewidth=3)
-    plt.savefig('my_plot.png', bbox_inches = 'tight',pad_inches = 0) # сохраняет картинку в той же директории, при повторном выполнении функцииб перезаписывается под тем же именеем
-    #plt.show()
+    plt.savefig('images/my_plot.png', bbox_inches = 'tight',pad_inches = 0) # сохраняет картинку в той же директории, при повторном выполнении функцииб перезаписывается под тем же именеем
+
+    # image_directory = os.path.join('images', 'images/my_plot.png')
+    # plt.savefig(image_directory, bbox_inches='tight', pad_inches=0)
+    # #plt.show()
 
 
 if __name__ == "main":
