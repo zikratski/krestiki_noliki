@@ -2,7 +2,7 @@ import numpy as np
 import telebot
 
 import graphic
-import algo, algo2
+import algo
 from telebot import types
 # Остальная игровая логика
 # Определяем переменные, ответственные за режим игры, её сложность и размер поля
@@ -356,7 +356,7 @@ def choose_figure(message):
             if mode == 'c ботом':
                 bot.send_message(message.chat.id, text="Вы - Крестики\nБот - Нолики")
             elif mode == 'c другом':
-                bot.send_message(message.chat.id, text="Person 1 - Крестики\nPerson 2 - Нолики")
+                bot.send_message(message.chat.id, text="Игрок 1 - Крестики\nИгрок 2 - Нолики")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id, f"@{mess_id} - Крестики\n@{id2 if mess_id == id1 else id1} - Нолики")
             choose_mode(message)
@@ -370,7 +370,7 @@ def choose_figure(message):
             if mode == 'c ботом':
                 bot.send_message(message.chat.id, text="Вы - Нолики\nБот - Крестики")
             elif mode == 'c другом':
-                bot.send_message(message.chat.id, text="Person 1 - Нолики\nPerson 2 - Крестики")
+                bot.send_message(message.chat.id, text="Игрок 1 - Нолики\nИгрок 2 - Крестики")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id, f"@{mess_id} - Нолики\n@{id2 if mess_id == id1 else id1} - Крестики")
             choose_mode(message)
@@ -639,7 +639,7 @@ def stats_show(message):
         global matr, symbol_person, symbol_ai
         global move_choose
         state = matr[:]
-        stats = algo2.get_stats(message, state,
+        stats = algo.get_stats(message, state,
                                 move='person' if move_choose == 'you' or move_choose == 'person 1' else 'ai',
                                 pers=symbol_person, ai=symbol_ai)
         if (message.text == "/start"):
@@ -698,7 +698,7 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     global matr
     global graphics_mode
     state = matr[:]
-    ij = algo2.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
+    ij = algo.best_move(state, mode=mode, pers=symbol_person, ai=symbol_ai)
     state[ij[0]][ij[1]] = symbol_ai
     clear_buttons(str([key for key in dict_commands if dict_commands[key] == ij][0]))
     graphic.graph(state, graphics_mode)
