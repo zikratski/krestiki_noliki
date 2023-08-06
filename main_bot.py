@@ -1,6 +1,6 @@
 import numpy as np
 import telebot
-
+import os
 import graphic
 import algo
 from telebot import types
@@ -382,7 +382,7 @@ def choose_figure(message):
             if mode == "с ботом":
                 bot.send_message(message.chat.id, text="Вы - Дамблдор\nБот - Северус Снегг")
             elif mode == "с другом":
-                bot.send_message(message.chat.id, text="Person 1 - Дамблдор\nPerson 2 - Северус Снегг")
+                bot.send_message(message.chat.id, text="Игрок 1 - Дамблдор\nИгрок 2 - Северус Снегг")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id, f"@{mess_id} - Дамблдори\n@{id2 if mess_id == id1 else id1} - Северус Снегг")
             choose_mode(message)
@@ -394,7 +394,7 @@ def choose_figure(message):
             if mode == "с ботом":
                 bot.send_message(message.chat.id, text="Вы - Северус Снегг\nБот - Дамблдор")
             elif mode == "с другом":
-                bot.send_message(message.chat.id, text="Person 1 - Северус Снегг\nPerson 2 - Дамблдор")
+                bot.send_message(message.chat.id, text="Игрок 1 - Северус Снегг\nИгрок 2 - Дамблдор")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id,
                                  f"@{mess_id} - Северус Снегг\n@{id2 if mess_id == id1 else id1} - Дамблдор")
@@ -408,7 +408,7 @@ def choose_figure(message):
             if mode == "с ботом":
                 bot.send_message(message.chat.id, text="Вы - Лучший клуб в истории футбола\nБот - МанСити")
             elif mode == "с другом":
-                bot.send_message(message.chat.id, text="Person 1 - Лучший клуб в истории футбола\nPerson 2 - МанСити")
+                bot.send_message(message.chat.id, text="Игрок 1 - Лучший клуб в истории футбола\nИгрок 2 - МанСити")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id,
                                  f"@{mess_id} - Лучший клуб в истории футбола\n@{id2 if mess_id == id1 else id1} - МанСити")
@@ -421,7 +421,7 @@ def choose_figure(message):
             if mode == "с ботом":
                 bot.send_message(message.chat.id, text="Вы - МанСити\nБот - Лучший клуб в истории футбола")
             elif mode == "с другом":
-                bot.send_message(message.chat.id, text="Person 1 - МанСити\nPerson 2 - Лучший клуб в истории футбола")
+                bot.send_message(message.chat.id, text="Игрок 1 - МанСити\nИгрок 2 - Лучший клуб в истории футбола")
             elif mode == "c чатом":
                 bot.send_message(message.chat.id,
                                  f"@{mess_id} - МанСити\n@{id2 if mess_id == id1 else id1} - Лучший клуб в истории футбола")
@@ -557,7 +557,11 @@ def first_ai_move(message,mode,symbol_person,symbol_ai):
 
     clear_buttons('1')
     graphic.graph(state, graphics_mode)
-    photo = open('my_plot.png', 'rb')
+    # photo = open('images/my_plot.png', 'rb')
+    # bot.send_photo(message.chat.id, photo)
+
+    photo_path = os.path.join('images', 'my_plot.png')
+    photo = open(photo_path, 'rb')
     bot.send_photo(message.chat.id, photo)
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -607,7 +611,7 @@ def move_person(message):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
                 clear_buttons(message.text)
                 graphic.graph(state, graphics_mode)
-                photo = open('my_plot.png', 'rb')
+                photo = open('images/my_plot.png', 'rb')
                 bot.send_photo(message.chat.id, photo)
 
                 if algo.check_lose(state, pers=symbol_person):
@@ -702,7 +706,7 @@ def start_game_ai(message,mode,symbol_person,symbol_ai):
     state[ij[0]][ij[1]] = symbol_ai
     clear_buttons(str([key for key in dict_commands if dict_commands[key] == ij][0]))
     graphic.graph(state, graphics_mode)
-    photo = open('my_plot.png', 'rb')
+    photo = open('images/my_plot.png', 'rb')
     bot.send_photo(message.chat.id, photo)
 
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -833,7 +837,7 @@ def move_person_1(message):
                     state[i][j] = symbol_person
                     clear_buttons(message.text)
                     graphic.graph(state, graphics_mode)
-                    photo = open('my_plot.png', 'rb')
+                    photo = open('images/my_plot.png', 'rb')
                     bot.send_photo(message.chat.id, photo)
 
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
@@ -923,7 +927,7 @@ def move_person_2(message):
                     state[i][j] = symbol_ai
                     clear_buttons(message.text)
                     graphic.graph(state, graphics_mode)
-                    photo = open('my_plot.png', 'rb')
+                    photo = open('images/my_plot.png', 'rb')
                     bot.send_photo(message.chat.id, photo)
 
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3)
