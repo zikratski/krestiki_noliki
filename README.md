@@ -16,6 +16,17 @@
 ## Использование
 Для использования бота необходим python 3, a также библиотеки numpy, matplotlib, telebot. После их установки запустите файл main_bot.py. После этого можно запустить бота в телеграмме(https://t.me/XsAndOsBot) и тестировать.
 
+[//]: # (![Screenshot_20230806-152041.png]&#40;readme_files%2FScreenshot_20230806-152041.png&#41; )
+
+[//]: # (![Screenshot_20230806-152119.png]&#40;readme_files%2FScreenshot_20230806-152119.png&#41;)
+
+[//]: # (![Screenshot_20230806-152836.png]&#40;readme_files%2FScreenshot_20230806-152836.png&#41;)
+<p float="left">
+  <img src="readme_files/Screenshot_20230806-152041.png" width="300" />
+  <img src="readme_files/Screenshot_20230806-152119.png" width="300" /> 
+  <img src="readme_files/Screenshot_20230806-152836.png" width="300" />
+</p>
+
 ## Разработка
 
 ### Зачем вы разработали этот проект?
